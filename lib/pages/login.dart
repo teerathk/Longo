@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:longo/pages/dashboard.dart';
 import 'package:longo/pages/forgot.dart';
 
 class loginPage extends StatelessWidget {
@@ -58,6 +58,7 @@ class loginPage extends StatelessWidget {
 
                 ),
               ),
+
               TextFormField(
                 //autofocus: true,
                 style: TextStyle(
@@ -105,6 +106,7 @@ class loginPage extends StatelessWidget {
                         textAlign: TextAlign.left,
                       ),
                     ),
+
                     Padding(
                       padding: EdgeInsets.only(bottom: 5),
                       child: TextButton(
@@ -127,36 +129,34 @@ class loginPage extends StatelessWidget {
                   ]
               ),
               TextFormField(
+                //autofocus: true,
                 obscureText: true,
-                decoration: InputDecoration(
+                style: TextStyle(
+                  color: Color(0xff0D529A),
+                ),
+                decoration: const InputDecoration(
                   hintText: "******",
-                  filled: true,
-                  fillColor: Color(0xffF2F3F5),
-                  hintStyle: const TextStyle(
-                      fontSize: 17.0,
-                      color: Colors.grey
-                  ),
-                  contentPadding: const EdgeInsets.all(20),
-                  labelStyle: const TextStyle(
+                  hintStyle: TextStyle(
+                    fontSize: 16,
                     color: Colors.grey,
-                    fontSize: 17,
+                  ),
+                  contentPadding: EdgeInsets.all(20),
+                  labelStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 11,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
+                  filled: true,
+                  fillColor: Color(0xffF2F3F5),
+                  floatingLabelBehavior:FloatingLabelBehavior.always,
+                  labelText: "",
                   suffixIcon: Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 5.0),
-                    child: IconButton(
-                        icon: Icon(
-                            Icons.remove_red_eye_outlined,
-                        color: Colors.grey,),
-                        onPressed: () {
-
-                        }),
+                    padding: const EdgeInsetsDirectional.only(end: 12.0),
+                    child: Icon(Icons.remove_red_eye, color: Colors.grey),
                   ),
-
                 ),
-
               ),
               Container(
                 height: 20,
@@ -175,7 +175,13 @@ class loginPage extends StatelessWidget {
                       primary: Color(0xff0D529A),
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+
+                      Navigator .push(
+                          context, MaterialPageRoute(
+                          builder: (context) => dashboardPage()
+                      ));
+                    },
                     child: const Text(
                       'Sign In',
                       style: TextStyle(fontSize: 16),
