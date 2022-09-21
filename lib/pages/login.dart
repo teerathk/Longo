@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 class loginPage extends StatelessWidget {
   const loginPage({Key? key}) : super(key: key);
 
@@ -9,6 +9,8 @@ class loginPage extends StatelessWidget {
     var inputLabelStyle = const TextStyle(fontSize: 10,height: 0,color: const Color(0xff202020),);
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final TextEditingController emailController = new TextEditingController();
+    final TextEditingController passwordController = new TextEditingController();
 
     return Material(
 
@@ -54,6 +56,7 @@ class loginPage extends StatelessWidget {
           ),
           TextFormField(
             //autofocus: true,
+            controller: emailController,
             style: TextStyle(
               color: Color(0xff0D529A),
             ),
@@ -90,6 +93,7 @@ class loginPage extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.only(bottom: 5), //apply padding to all four sides
                   child: Text(
+
                     "Password",
                     style: TextStyle(
                       fontSize: 11,
@@ -164,7 +168,17 @@ class loginPage extends StatelessWidget {
                 child: const Text("Sign In"),
                 color: Color(0xff0D529A),
                 textColor: const Color(0xffffffff),
-                onPressed: () { },
+                onPressed: () {
+                  Fluttertoast.showToast(
+                      msg: "Congratulations, You have successfully Logged In",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
+                },
               ),
             ),
           ),

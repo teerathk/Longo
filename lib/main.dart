@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:developer' as developer;
+
 import 'package:longo/pages/home_page.dart';
 import 'package:longo/pages/login.dart';
-
-void main(){
+  void main(){
   runApp(MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -21,4 +24,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
