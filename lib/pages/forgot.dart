@@ -79,6 +79,7 @@ class forgotPage extends StatelessWidget {
                                 "Reset your \nPassword",
                                 style: TextStyle(
                                   fontSize: 40,
+                                  color: Color(0xff0D529A),
                                 ),
                                 textAlign: TextAlign.left,
 

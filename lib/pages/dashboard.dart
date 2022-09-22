@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:longo/pages/Drawer.dart';
+import 'package:longo/pages/homesite.dart';
+import 'package:longo/pages/skirtingsite.dart';
 
 class dashboardPage extends StatelessWidget {
   const dashboardPage({Key? key}) : super(key: key);
@@ -8,6 +11,7 @@ class dashboardPage extends StatelessWidget {
     String userPhoto = "";
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final globalKey = GlobalKey<ScaffoldState>();
 
     return Material(
       child: Scaffold(
@@ -60,9 +64,9 @@ class dashboardPage extends StatelessWidget {
                             icon: const Icon(Icons.menu_rounded),
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
-                              color: Color(0xff0D529A),
+                            color: Color(0xff0D529A),
                             onPressed: () {
-                              //globalKey.currentState?.openEndDrawer();
+                              globalKey.currentState?.openEndDrawer();
                             },
                           ),
                         ),
@@ -74,6 +78,7 @@ class dashboardPage extends StatelessWidget {
             ),
           ],
         ),
+        endDrawer: MyDrawer(),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(30),
@@ -86,47 +91,47 @@ class dashboardPage extends StatelessWidget {
                 2: FlexColumnWidth(2),
               },
                 children: [
-                  TableRow(
-                      children: [
-                        Container(
-                          width: screenWidth,
-                          margin: EdgeInsets.fromLTRB(20, 10, 20, 00),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xff0D529A),
-                                minimumSize: const Size.fromHeight(50), // NEW
-                              ),
-                              onPressed: () {},
-                              child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      height: 30,
-                                    ),
-                                    Align(
-                                      child: Text(
-                                          "Looking to \nsend a giftcard?",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                              color: Color(0xffffffff),
-                                              fontFamily: 'RalewayLight')
-                                      ),
-                                      alignment: Alignment.center,
-                                    ),
-                                    Container(
-                                      height: 30,
-                                    ),
-
-
-                                  ]
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]
-                  ),
+                  // TableRow(
+                  //     children: [
+                  //       Container(
+                  //         width: screenWidth,
+                  //         margin: EdgeInsets.fromLTRB(20, 10, 20, 00),
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  //           child: ElevatedButton(
+                  //             style: ElevatedButton.styleFrom(
+                  //               primary: Color(0xff0D529A),
+                  //               minimumSize: const Size.fromHeight(50), // NEW
+                  //             ),
+                  //             onPressed: () {},
+                  //             child: Column(
+                  //                 children: <Widget>[
+                  //                   Container(
+                  //                     height: 30,
+                  //                   ),
+                  //                   Align(
+                  //                     child: Text(
+                  //                         "Looking to \nsend a giftcard?",
+                  //                         style: TextStyle(
+                  //                             fontWeight: FontWeight.bold,
+                  //                             fontSize: 16,
+                  //                             color: Color(0xffffffff),
+                  //                             fontFamily: 'RalewayLight')
+                  //                     ),
+                  //                     alignment: Alignment.center,
+                  //                   ),
+                  //                   Container(
+                  //                     height: 30,
+                  //                   ),
+                  //
+                  //
+                  //                 ]
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ]
+                  // ),
                   TableRow(
                       children: [
                         Container(
@@ -139,11 +144,16 @@ class dashboardPage extends StatelessWidget {
                                 primary: Color(0xffF2F3F5),
                                 minimumSize: const Size.fromHeight(50), // NEW
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator .push(
+                                    context, MaterialPageRoute(
+                                    builder: (context) => homesitePage()
+                                ));
+                              },
                               child: Column(
                                   children: <Widget>[
                                     Container(
-                                      height: 20,
+                                      height: 30,
                                     ),
                                     Align(
                                       child: Text(
@@ -157,21 +167,7 @@ class dashboardPage extends StatelessWidget {
                                       alignment: Alignment.center,
                                     ),
                                     Container(
-                                      height: 20,
-                                    ),
-                                    Align(
-                                      child: Text(
-                                          "Checklist",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 11,
-                                              color: Colors.grey,
-                                              fontFamily: 'RalewayLight')
-                                      ),
-                                      alignment: Alignment.center,
-                                    ),
-                                    Container(
-                                      height: 20,
+                                      height: 30,
                                     ),
                                 ]
                               ),
@@ -184,12 +180,12 @@ class dashboardPage extends StatelessWidget {
                       children: [
                         Container(
                           width: screenWidth,
-                          margin: EdgeInsets.fromLTRB(20, 10, 20, 00),
+                          margin: EdgeInsets.fromLTRB(20, 10, 20, 30),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Color(0xffF2F3F5),
+                                primary: Color(0xffffffff),
                                 minimumSize: const Size.fromHeight(50), // NEW
                               ),
                               onPressed: () {},
@@ -199,26 +195,12 @@ class dashboardPage extends StatelessWidget {
                                       height: 20,
                                     ),
                                     Align(
+
                                       child: Text(
-                                          "Skirting",
+                                          "In Progress Skirting",
                                           style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
+                                              fontSize: 14,
                                               color: Color(0xff0D529A),
-                                              fontFamily: 'RalewayLight')
-                                      ),
-                                      alignment: Alignment.center,
-                                    ),
-                                    Container(
-                                      height: 20,
-                                    ),
-                                    Align(
-                                      child: Text(
-                                          "Checklist",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 11,
-                                              color: Colors.grey,
                                               fontFamily: 'RalewayLight')
                                       ),
                                       alignment: Alignment.center,
@@ -234,14 +216,93 @@ class dashboardPage extends StatelessWidget {
                       ]
                   ),
 
+                  TableRow(
+                      children: [
+                        Container(
+                          width: screenWidth,
+                          margin: EdgeInsets.fromLTRB(20, 10, 20, 00),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xffF2F3F5),
+                                minimumSize: const Size.fromHeight(50), // NEW
+                              ),
+                              onPressed: () {
+                                Navigator .push(
+                                    context, MaterialPageRoute(
+                                    builder: (context) => skirtingsitePage()
+                                ));
+                              },
+                              child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      height: 30,
+                                    ),
+                                    Align(
+                                      child: Text(
+                                          "Skirting",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Color(0xff0D529A),
+                                              fontFamily: 'RalewayLight')
+                                      ),
+                                      alignment: Alignment.center,
+                                    ),
+                                    Container(
+                                      height: 30,
+                                    ),
+                                  ]
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Container(
+                          width: screenWidth,
+                          margin: EdgeInsets.fromLTRB(20, 10, 20, 30),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Color(0xffffffff),
+                                minimumSize: const Size.fromHeight(50), // NEW
+                              ),
+                              onPressed: () {},
+                              child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      height: 20,
+                                    ),
+                                    Align(
+
+                                      child: Text(
+                                          "In Progress Skirting",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(0xff0D529A),
+                                              fontFamily: 'RalewayLight')
+                                      ),
+                                      alignment: Alignment.center,
+                                    ),
+                                    Container(
+                                      height: 20,
+                                    ),
+                                  ]
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]
+                  ),
                 ]
             ),
-
           ),
-
         ),
-
-
       ),
     );
   }
