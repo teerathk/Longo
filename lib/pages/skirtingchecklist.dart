@@ -125,17 +125,17 @@ class homechecklistPage extends StatelessWidget {
                               ),
                               child: Column(
                                   children: <Widget>[
-                                    checkItemBuilder(context, "  All piers are in place and properly installed and no threads showing over 2\" from top of the nut"),
-                                    checkItemBuilder(context, "  No voids under ABS pads/ No ABS pads are deflected more than 3/8'"),
-                                    checkItemBuilder(context, "  Anchors installed properly if applicable"),
-                                    checkItemBuilder(context, "  Straps are wrapped 4-5 times around split bolt and installed properly on frame"),
-                                    checkItemBuilder(context, "  Xi2 system hardware installed correctly and not loose"),
-                                    checkItemBuilder(context, "  Concrete is backfilled with stone"),
-                                    checkItemBuilder(context, "  Dryer vent installed"),
-                                    checkItemBuilder(context, "  Vents installed"),
-                                    checkItemBuilder(context, "  Vents installed"),
-                                    checkItemBuilder(context, "   Shingles are laid for weed barrier with plastic tucked underneath"),
-                                    checkItemBuilder(context, "    Access panels are at the water shut off and sewer cleanout", bottomBorder: false),
+                                    checkItemBuilder(context, "All piers are in place and properly installed and no threads showing over 2\" from top of the nut"),
+                                    checkItemBuilder(context, " No voids under ABS pads/ No ABS pads are deflected more than 3/8'"),
+                                    checkItemBuilder(context, " Anchors installed properly if applicable"),
+                                    checkItemBuilder(context, " Straps are wrapped 4-5 times around split bolt and installed properly on frame"),
+                                    checkItemBuilder(context, " Xi2 system hardware installed correctly and not loose"),
+                                    checkItemBuilder(context, " Concrete is backfilled with stone"),
+                                    checkItemBuilder(context, " Dryer vent installed"),
+                                    checkItemBuilder(context, " Vents installed"),
+                                    checkItemBuilder(context, " Vents installed"),
+                                    checkItemBuilder(context, " Shingles are laid for weed barrier with plastic tucked underneath"),
+                                    checkItemBuilder(context, " Access panels are at the water shut off and sewer cleanout", bottomBorder: false),
 
                                   ]
                               )

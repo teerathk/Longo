@@ -197,7 +197,7 @@ class dashboardPage extends StatelessWidget {
                                     Align(
 
                                       child: Text(
-                                          "In Progress Skirting",
+                                          "In Progress Homesite",
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: Color(0xff0D529A),

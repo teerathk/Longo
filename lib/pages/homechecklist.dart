@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:longo/pages/homecomments.dart';
 
 class homechecklistPage extends StatelessWidget {
   @override
@@ -80,7 +80,6 @@ class homechecklistPage extends StatelessWidget {
                     height: 20,
                   ),
                   const Text(
-
                       "* Data is Autosaved",
                       textAlign: TextAlign.left,
                       style: TextStyle(
@@ -155,10 +154,10 @@ class homechecklistPage extends StatelessWidget {
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
                     onPressed: () {
-                      // Navigator .push(
-                      //     context, MaterialPageRoute(
-                      //     builder: (context) => homechecklistPage()
-                      // ));
+                      Navigator .push(
+                          context, MaterialPageRoute(
+                          builder: (context) => homecommentsPage()
+                      ));
                     },
                     child: const Text(
                       'Next',
