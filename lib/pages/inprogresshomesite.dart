@@ -81,6 +81,7 @@ class inprogresshomesite extends StatelessWidget {
             ],
           ),
           body: SingleChildScrollView(
+
           child: Padding(
           padding: EdgeInsets.all(30),
 
@@ -93,6 +94,18 @@ class inprogresshomesite extends StatelessWidget {
           2: FlexColumnWidth(2),
           },
           children: [
+            TableRow(
+              children: [
+                const Text(
+                  "In Pogress Homesite",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Color(0xff0D529A),
+                  ),
+                ),
+              //Container(Icon(Icons.check, color: Colors.grey)),
+              ]
+            ),
              TableRow(
                 children: [
                   Container(
