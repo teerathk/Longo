@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:longo/pages/homeuploadimage.dart';
 
 
 class homecommentsPage extends StatelessWidget {
@@ -208,6 +209,7 @@ class homecommentsPage extends StatelessWidget {
                   Container(
                     height: 20,
                   ),
+
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: Color(0xff0D529A),
@@ -222,6 +224,25 @@ class homecommentsPage extends StatelessWidget {
                     child: const Text(
                       'Post',
                       style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Container(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xffF2F3F5),
+                      minimumSize: const Size.fromHeight(50), // NEW
+                    ),
+                    onPressed: () {
+                      Navigator .push(
+                          context, MaterialPageRoute(
+                          builder: (context) => homeuploadimgPage()
+                      ));
+                    },
+                    child: const Text(
+                      'Next',
+                      style: TextStyle(fontSize: 16,color: Color(0xff0D529A)),
                     ),
                   ),
                 ]
