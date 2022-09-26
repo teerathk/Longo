@@ -1,10 +1,84 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class forgotPage extends StatelessWidget {
-  const forgotPage({Key? key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class ForgotPage extends StatefulWidget {
+  @override
+  _ForgotPageState createState() => _ForgotPageState();
+}
+
+class _ForgotPageState extends State<ForgotPage> {
+  final TextEditingController emailController = new TextEditingController();
+
+  resetPass(String email) async {
+    var jsonResponse = null;
+    final queryParameters = {'action': 'resetpassword', 'user': email};
+    var url = Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+    // var url = Uri.https('127.0.0.1', '/jobs/api.php', queryParameters);
+    // var url = Uri.http('longonew.plego.pro', '/api.php', queryParameters);
+    var response = await http.get(url);
+    var jsonStr = response.body.toString();
+    if(response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+
+      if(jsonResponse != null) {
+        setState(() {
+          // _isLoading = false;
+        });
+        var message = jsonResponse['message'];
+        if(jsonResponse['success']==true){
+          var message = jsonResponse['message'];
+          Fluttertoast.showToast(
+              msg: "Email Sent Successfully",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+          // Navigator .push(
+          //     context, MaterialPageRoute(
+          //     builder: (context) => dashboardPage()
+          // ));
+
+        } else {
+          Fluttertoast.showToast(
+              msg: "Sorry, try again\n$message",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+
+        }
+        // print(response.body);
+      }
+    }
+    else {
+      setState(() {
+        // _isLoading = false;
+      });
+      Fluttertoast.showToast(
+          msg: "$email Message2: $jsonStr",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -34,7 +108,23 @@ class forgotPage extends StatelessWidget {
                       primary: Color(0xff0D529A),
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      if(emailController.text.isEmpty){
+                        Fluttertoast.showToast(
+                            msg: "Please enter an email address",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+
+                      } else {
+                        resetPass(emailController.text);
+                      }
+
+                    },
                     child: const Text(
                       'Send instructions',
                       style: TextStyle(fontSize: 16),
@@ -53,7 +143,8 @@ class forgotPage extends StatelessWidget {
                     textStyle: const TextStyle(fontSize: 16),
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                  },
                   child: const Text("Cancel"),
                 ),
               ),
@@ -114,6 +205,7 @@ class forgotPage extends StatelessWidget {
 
                               ),
                               TextFormField(
+                                controller: emailController,
                                 // focusNode: f1,
                                 // controller: txtEmail,
                                 style: TextStyle(

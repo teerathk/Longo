@@ -1,8 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:longo/pages/skirtingchecklist.dart';
 
-class skirtingsitePage extends StatelessWidget {
-  const skirtingsitePage({Key? key}) : super(key: key);
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class SkirtingSite extends StatefulWidget {
+  @override
+  SkirtingSitePage createState() => SkirtingSitePage();
+}
+class SkirtingSitePage extends State<SkirtingSite> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final TextEditingController sirtingtitle = new TextEditingController();
+
+  addHomesite(String homesitetext) async {
+    final SharedPreferences prefs = await _prefs;
+    var jsonResponse = null;
+
+    final queryParameters = {'action': 'addCategory', 'category':'skirting', 'title': homesitetext};
+    var url = Uri.https(
+        'www.longocorporation.com', '/jobs/api.php', queryParameters);
+
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        setState(() {
+          // _isLoading = false;
+        });
+        var message = jsonResponse['message'];
+        if (jsonResponse['success'] == true) {
+          var message = jsonResponse['message'];
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString("skirtingid", message);
+          Navigator .push(
+              context, MaterialPageRoute(
+              builder: (context) => SkirtingCheckList()
+          ));
+
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +132,7 @@ class skirtingsitePage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                "Hi Kristin \nwhere would you \nlike to go?",
+                                "Hi Kristin,\nEnter Skirting Site Address below",
                                 style: TextStyle(
                                   fontSize: 40,
                                   color: Color(0xff0D529A),
@@ -114,22 +154,25 @@ class skirtingsitePage extends StatelessWidget {
                               //
                               // ),
                               Container(
-                                height: 20,
+                                height: 30,
                               ),
-                              const Padding(
-                                padding: EdgeInsets.only(bottom: 10), //apply padding to all four sides
-                                child: Text(
-                                  "Skirting Site",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    height: 0,
-                                    color: Color(0x60202020),
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-
-                              ),
+                              // const Padding(
+                              //   padding: EdgeInsets.only(bottom: 10), //apply padding to all four sides
+                              //   child: Text(
+                              //     "\nSkirting Site",
+                              //     style: TextStyle(
+                              //       fontSize: 18,
+                              //       height: 0,
+                              //       color: Color(0x60000000),
+                              //     ),
+                              //     textAlign: TextAlign.left,
+                              //   ),
+                              //
+                              // ),
+                              Container(height: 20),
                               TextFormField(
+
+                                controller: sirtingtitle,
                                 // focusNode: f1,
                                 // controller: txtEmail,
                                 style: TextStyle(
@@ -150,8 +193,8 @@ class skirtingsitePage extends StatelessWidget {
                                   fillColor: Color(0xffF2F3F5),
                                   floatingLabelBehavior:FloatingLabelBehavior.always,
                                   labelText: "",
-                                  hintText: "4949 Forest Ave",
-                                  hintStyle: TextStyle(fontSize: 16.0, color: Color(0xff051C48)),
+                                  hintText: "",
+                                  hintStyle: TextStyle(fontSize: 16.0, color: Color(0xffAAAAAA)),
                                   // suffixIcon: Padding(
                                   //   padding: const EdgeInsetsDirectional.only(end: 12.0),
                                   //   child: Icon(Icons.place, color: Color(0xff051C48),), // myIcon is a 48px-wide widget.
@@ -174,10 +217,11 @@ class skirtingsitePage extends StatelessWidget {
                                     minimumSize: const Size.fromHeight(50), // NEW
                                   ),
                                   onPressed: () {
-                                    Navigator .push(
-                                        context, MaterialPageRoute(
-                                        builder: (context) => homechecklistPage()
-                                    ));
+                                    addHomesite(sirtingtitle.text);
+                                    // Navigator .push(
+                                    //     context, MaterialPageRoute(
+                                    //     builder: (context) => SkirtingCheckList()
+                                    // ));
                                   },
                                   child: const Text(
                                     'Next',

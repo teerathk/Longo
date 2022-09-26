@@ -147,7 +147,7 @@ class dashboardPage extends StatelessWidget {
                               onPressed: () {
                                 Navigator .push(
                                     context, MaterialPageRoute(
-                                    builder: (context) => homesitePage()
+                                    builder: (context) => HomeSite()
                                 ));
                               },
                               child: Column(
@@ -231,7 +231,7 @@ class dashboardPage extends StatelessWidget {
                               onPressed: () {
                                 Navigator .push(
                                     context, MaterialPageRoute(
-                                    builder: (context) => skirtingsitePage()
+                                    builder: (context) => SkirtingSite()
                                 ));
                               },
                               child: Column(

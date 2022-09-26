@@ -1,23 +1,164 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:longo/pages/dashboard.dart';
 import 'package:longo/pages/forgot.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-class loginPage extends StatelessWidget {
-  const loginPage({Key? key}) : super(key: key);
+String loginstatus='';
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final prefs = SharedPreferences.getInstance();
+
+  bool _isLoading = false;
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+
+
+  @override
+  void initState() {
+    super.initState();
+    checkLogin();
+    // var loginstatus = _prefs.then((SharedPreferences prefs) {
+    //   return prefs.getBool('Login') ?? false;
+    // });
+    //
+    // if(loginstatus=="true" || loginstatus=="1"){
+    //   Fluttertoast.showToast(
+    //       msg: "Already LoggedIn",
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.TOP,
+    //       timeInSecForIosWeb: 1,
+    //       backgroundColor: Colors.green,
+    //       textColor: Colors.white,
+    //       fontSize: 16.0
+    //   );
+    //
+    // } else {
+    //   Fluttertoast.showToast(
+    //       msg: "No Not logged In",
+    //       toastLength: Toast.LENGTH_LONG,
+    //       gravity: ToastGravity.TOP,
+    //       timeInSecForIosWeb: 1,
+    //       backgroundColor: Colors.yellow,
+    //       textColor: Colors.white,
+    //       fontSize: 16.0
+    //   );
+    //
+    // }
+  }
+  checkLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(prefs.getBool("Login")==true){
+        Fluttertoast.showToast(
+            msg: "Already LoggedIn",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      Navigator .push(
+          context, MaterialPageRoute(
+          builder: (context) => dashboardPage()
+      ));
+
+    }
+  }
+
+  signIn(String email, pass) async {
+    final SharedPreferences prefs = await _prefs;
+
+    var jsonResponse = null;
+    final queryParameters = {'action': 'login', 'user': email, 'pass': pass};
+    // var url = Uri.http('longonew.plego.pro', '/api.php', queryParameters);
+    // var url = Uri.http('127.0.0.1', '/Plego/Longo/jobs/api.php', queryParameters);
+    var url = Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+
+    var response = await http.get(url);
+    if(response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if(jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        var message = jsonResponse['message'];
+        if(jsonResponse['success']==true){
+          var message = jsonResponse['message'];
+
+
+          prefs.setBool("Login", true);
+          prefs.setString("UserId", message['employeeId']);
+          var FullName = message['firstName']+" "+message["lastName"];
+          prefs.setString("Name", FullName);
+          prefs.setString("Email", message['emailAddress']);
+
+          Fluttertoast.showToast(
+              msg: email+"\nLogged In Successfully",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.TOP,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+          Navigator .push(
+              context, MaterialPageRoute(
+              builder: (context) => dashboardPage()
+          ));
+
+        } else {
+          Fluttertoast.showToast(
+              msg: "Sorry, try again\n$message",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.TOP,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+
+        }
+        // print(response.body);
+      }
+    }
+    else {
+      setState(() {
+        _isLoading = false;
+      });
+      Fluttertoast.showToast(
+          msg: "Message2: "+response.body,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    var inputLabelStyle = const TextStyle(fontSize: 10,height: 0,color: const Color(0xff202020),);
+    var inputLabelStyle = const TextStyle(
+      fontSize: 10,
+      height: 0,
+      color: const Color(0xff202020),
+    );
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    final TextEditingController emailController = new TextEditingController();
-    final TextEditingController passwordController = new TextEditingController();
 
     return Material(
-
       color: Colors.white,
       child: SingleChildScrollView(
         child: Padding(
@@ -31,11 +172,10 @@ class loginPage extends StatelessWidget {
                   fontSize: 40,
                   color: Color(0xff0D529A),
                 ),
-
-
               ),
               const Padding(
-                padding: EdgeInsets.only(bottom: 20), //apply padding to all four sides
+                padding: EdgeInsets.only(bottom: 20),
+                //apply padding to all four sides
                 child: Text(
                   "Sign in to your account.",
                   style: TextStyle(
@@ -47,7 +187,8 @@ class loginPage extends StatelessWidget {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(bottom: 15), //apply padding to all four sides
+                padding: EdgeInsets.only(bottom: 15),
+                //apply padding to all four sides
                 child: Text(
                   "Email Address",
                   style: TextStyle(
@@ -55,11 +196,10 @@ class loginPage extends StatelessWidget {
                     height: 0,
                     color: Colors.grey,
                   ),
-
                 ),
               ),
-
               TextFormField(
+                controller: emailController,
                 //autofocus: true,
                 style: TextStyle(
                   color: Color(0xff0D529A),
@@ -80,7 +220,7 @@ class loginPage extends StatelessWidget {
                   ),
                   filled: true,
                   fillColor: Color(0xffF2F3F5),
-                  floatingLabelBehavior:FloatingLabelBehavior.always,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   labelText: "",
                   suffixIcon: Padding(
                     padding: const EdgeInsetsDirectional.only(end: 12.0),
@@ -95,7 +235,8 @@ class loginPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     const Padding(
-                      padding: EdgeInsets.only(bottom: 5), //apply padding to all four sides
+                      padding: EdgeInsets.only(bottom: 5),
+                      //apply padding to all four sides
                       child: Text(
                         "Password",
                         style: TextStyle(
@@ -106,29 +247,26 @@ class loginPage extends StatelessWidget {
                         textAlign: TextAlign.left,
                       ),
                     ),
-
                     Padding(
                       padding: EdgeInsets.only(bottom: 5),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: Colors.grey,
                           textStyle: const TextStyle(
-                              fontSize: 11,
-                              height: 0,
-                              color: Colors.red
-                          ),
+                              fontSize: 11, height: 0, color: Colors.red),
                         ),
-                        onPressed: (){
-                          Navigator .push(
-                              context, MaterialPageRoute(
-                              builder: (context) => forgotPage()
-                          )); },
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPage()));
+                        },
                         child: const Text('Forgot Password?'),
                       ),
                     ),
-                  ]
-              ),
+                  ]),
               TextFormField(
+                controller: passwordController,
                 //autofocus: true,
                 obscureText: true,
                 style: TextStyle(
@@ -150,7 +288,7 @@ class loginPage extends StatelessWidget {
                   ),
                   filled: true,
                   fillColor: Color(0xffF2F3F5),
-                  floatingLabelBehavior:FloatingLabelBehavior.always,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   labelText: "",
                   suffixIcon: Padding(
                     padding: const EdgeInsetsDirectional.only(end: 12.0),
@@ -161,11 +299,10 @@ class loginPage extends StatelessWidget {
               Container(
                 height: 20,
               ),
-
               Center(
                 child: Container(
                   alignment: Alignment.bottomCenter,
-                  height: screenHeight/3,
+                  height: screenHeight / 3,
                   //height: MediaQuery.of(context).size.height * 0.4,
                   width: screenWidth,
                   color: Colors.white,
@@ -176,11 +313,33 @@ class loginPage extends StatelessWidget {
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
                     onPressed: () {
+                      if(emailController.text.isEmpty || passwordController.text.isEmpty){
+                        Fluttertoast.showToast(
+                            msg: "Please enter Email and Password",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
 
-                      Navigator .push(
-                          context, MaterialPageRoute(
-                          builder: (context) => dashboardPage()
-                      ));
+                      } else {
+                        signIn(emailController.text, passwordController.text);
+                      }
+                      // Fluttertoast.showToast(
+                      //     msg: "Congratulations, (" +
+                      //         (emailController.text) +
+                      //         ") Logged In Successfully",
+                      //     toastLength: Toast.LENGTH_LONG,
+                      //     gravity: ToastGravity.CENTER,
+                      //     timeInSecForIosWeb: 1,
+                      //     backgroundColor: Colors.green,
+                      //     textColor: Colors.white,
+                      //     fontSize: 16.0);
+                      // Navigator .push(
+                      //     context, MaterialPageRoute(
+                      //     builder: (context) => dashboardPage()
+                      // ));
                     },
                     child: const Text(
                       'Sign In',
@@ -188,7 +347,6 @@ class loginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
               ),
             ],
           ),
@@ -196,4 +354,11 @@ class loginPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    throw UnimplementedError();
+  }
 }
+

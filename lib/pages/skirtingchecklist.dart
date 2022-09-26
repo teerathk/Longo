@@ -1,7 +1,142 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+class SkirtingCheckList extends StatefulWidget {
+  @override
+  SkirtingCheckListPage createState() => SkirtingCheckListPage();
+}
+
+class SkirtingCheckListPage extends State<SkirtingCheckList> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  var commentWidgets = <Widget>[];
+  @override
+  void initState() {
+    super.initState();
+    getHomesiteOptions(); //call it over here
+  }
+
+  submitCheckbox(String id, bool check) async {
+    var jsonResponse = null;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if(prefs.containsKey("skirtingid")){
+      var homesiteid = prefs.getString("skirtingid");
+
+      String checkstatus="0";
+      if(check){
+        checkstatus="1";
+      }
+      final queryParameters = {'action': 'setchecks', 'cat_id': homesiteid,'checkid':id, 'check':checkstatus};
+      var url =
+      Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+      var response = await http.get(url);
+      var jsonStr = response.body.toString();
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(response.body);
+
+        if (jsonResponse != null) {
+          setState(() {
+            // _isLoading = false;
+          });
+          if (jsonResponse['success'] == true) {
+            Fluttertoast.showToast(
+                msg: "Saved",
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.TOP,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.green,
+                textColor: Colors.white,
+                fontSize: 16.0);
+
+          }
+        }
+      }
+    } else {
+      Fluttertoast.showToast(
+          msg: "Unable to save",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+    }
 
 
-class homechecklistPage extends StatelessWidget {
+  }
+  getHomesiteOptions() async {
+    var jsonResponse = null;
+    final queryParameters = {'action': 'getchecks', 'category': 'skirting'};
+    var url =
+        Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+    // var url = Uri.https('127.0.0.1', '/jobs/api.php', queryParameters);
+    // var url = Uri.http('longonew.plego.pro', '/api.php', queryParameters);
+    var response = await http.get(url);
+    var jsonStr = response.body.toString();
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+
+      if (jsonResponse != null) {
+        setState(() {
+          // _isLoading = false;
+        });
+        var message = jsonResponse['message'];
+
+        if (jsonResponse['success'] == true) {
+          var message = jsonResponse['message'];
+          debugPrint('message: $message');
+          // var jsonBody = json.decode(message);
+          for (var data in message) {
+            commentWidgets
+                .add(checkItemBuilder(context, data['check_text'], data['id']));
+            // myAllData.add(Model(
+            //     data['id'], data['check_text']));
+          }
+          // debugPrint('list: $myAllData');
+          Fluttertoast.showToast(
+              msg: "Received Checks",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          // Navigator .push(
+          //     context, MaterialPageRoute(
+          //     builder: (context) => dashboardPage()
+          // ));
+
+        } else {
+          Fluttertoast.showToast(
+              msg: "Sorry, try again\n$message",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+        // print(response.body);
+      }
+    } else {
+      setState(() {
+        // _isLoading = false;
+      });
+      Fluttertoast.showToast(
+          msg: "Message2: $jsonStr",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String userPhoto = "";
@@ -20,7 +155,8 @@ class homechecklistPage extends StatelessWidget {
               margin: EdgeInsets.only(top: 10),
               width: screenWidth,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0,horizontal: 15),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -35,9 +171,10 @@ class homechecklistPage extends StatelessWidget {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == "" ? "assets/images/logo.png" : userPhoto),
-                              )
-                          ),
+                                image: NetworkImage(userPhoto == ""
+                                    ? "assets/images/logo.png"
+                                    : userPhoto),
+                              )),
                         ),
                       ),
                     ),
@@ -58,9 +195,7 @@ class homechecklistPage extends StatelessWidget {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {
-
-                            },
+                            onPressed: () {},
                           ),
                         ),
                       ),
@@ -80,7 +215,6 @@ class homechecklistPage extends StatelessWidget {
                     height: 20,
                   ),
                   const Text(
-
                     "* Data is Autosaved",
                     textAlign: TextAlign.left,
                     style: TextStyle(
@@ -113,7 +247,7 @@ class homechecklistPage extends StatelessWidget {
                   Expanded(
                       child: SingleChildScrollView(
                           child: Container(
-                            //height: screenHeight/1,
+                              //height: screenHeight/1,
                               decoration: BoxDecoration(
                                 color: const Color(0xfffafafa),
                                 border: Border.all(
@@ -123,25 +257,7 @@ class homechecklistPage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8),
                                 //border: Border.all(color: Theme.of(context).dividerColor, width: 1)
                               ),
-                              child: Column(
-                                  children: <Widget>[
-                                    checkItemBuilder(context, "All piers are in place and properly installed and no threads showing over 2\" from top of the nut"),
-                                    checkItemBuilder(context, " No voids under ABS pads/ No ABS pads are deflected more than 3/8'"),
-                                    checkItemBuilder(context, " Anchors installed properly if applicable"),
-                                    checkItemBuilder(context, " Straps are wrapped 4-5 times around split bolt and installed properly on frame"),
-                                    checkItemBuilder(context, " Xi2 system hardware installed correctly and not loose"),
-                                    checkItemBuilder(context, " Concrete is backfilled with stone"),
-                                    checkItemBuilder(context, " Dryer vent installed"),
-                                    checkItemBuilder(context, " Vents installed"),
-                                    checkItemBuilder(context, " Vents installed"),
-                                    checkItemBuilder(context, " Shingles are laid for weed barrier with plastic tucked underneath"),
-                                    checkItemBuilder(context, " Access panels are at the water shut off and sewer cleanout", bottomBorder: false),
-
-                                  ]
-                              )
-                          )
-                      )
-                  ),
+                              child: Column(children: commentWidgets)))),
                   Container(
                     height: 20,
                   ),
@@ -161,47 +277,46 @@ class homechecklistPage extends StatelessWidget {
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
-                ]
-            )
-        )
-    );
+                ])));
   }
 
-  Widget checkItemBuilder(@required BuildContext context, @required String text, {bool bottomBorder = true}) {
+  Widget checkItemBuilder(@required BuildContext context, @required String text,
+      @required String id,
+      {bool bottomBorder = true}) {
     bool checked = false;
 
     return Container(
-        decoration: bottomBorder ? BoxDecoration(
-            border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor))
-        ) : null,
-        child: Row(
-            children: <Widget>[
-              Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: StatefulBuilder(
-                      builder: (context, setState) {
-                        return Checkbox(
-                            activeColor: Color(0xff0D529A),
-                            value: checked,
-                            onChanged: (newVal) {
-                              setState(() {
-                                checked = !checked;
-                              });
-                            }
-                        );
-                      }
-                  )
-              ),
-              Expanded(
-                  child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 8, 10, 8),
-                      child: Text(
-                          text
-                      )
-                  )
-              )
-            ]
-        )
-    );
+        decoration: bottomBorder
+            ? BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(color: Theme.of(context).dividerColor)))
+            : null,
+        child: Row(children: <Widget>[
+          Padding(
+              padding: const EdgeInsets.all(8),
+              child: StatefulBuilder(builder: (context, setState) {
+                return Checkbox(
+                    activeColor: Color(0xff0D529A),
+                    value: checked,
+                    onChanged: (newVal) {
+                      setState(() {
+                        checked = !checked;
+                        submitCheckbox(id, checked);
+                        // Fluttertoast.showToast(
+                        //     msg: "$id Checkbox: $checked",
+                        //     toastLength: Toast.LENGTH_LONG,
+                        //     gravity: ToastGravity.CENTER,
+                        //     timeInSecForIosWeb: 1,
+                        //     backgroundColor: Colors.green,
+                        //     textColor: Colors.white,
+                        //     fontSize: 16.0);
+                      });
+                    });
+              })),
+          Expanded(
+              child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 10, 8),
+                  child: Text(text)))
+        ]));
   }
 }

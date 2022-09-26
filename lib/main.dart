@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:http/http.dart' as http;
 // import 'dart:developer' as developer;
 
@@ -17,8 +18,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        "/" : (context) => loginPage(),
-        "/login" : (context) => loginPage(),
+        "/" : (context) => LoginPage(),
+        "/login" : (context) => LoginPage(),
         "/home" :(context) => HomePage()
       },
     );

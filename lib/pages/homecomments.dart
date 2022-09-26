@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:longo/pages/homeuploadimage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+class HomeComments extends StatefulWidget {
+  @override
+  HomeCommentsPage createState() => HomeCommentsPage();
+}
 
-class homecommentsPage extends StatelessWidget {
+class HomeCommentsPage extends State<HomeComments> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final TextEditingController CommentsController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     String userPhoto = "";
@@ -191,7 +203,7 @@ class homecommentsPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(0.0),
                     child: TextFormField(
-                      //controller: _Textcontroller,
+                      controller: CommentsController,
                       minLines: 2,
                       maxLines: 5,
                       keyboardType: TextInputType.multiline,

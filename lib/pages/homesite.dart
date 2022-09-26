@@ -1,8 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:longo/pages/homechecklist.dart';
 
-class homesitePage extends StatelessWidget {
-  const homesitePage({Key? key}) : super(key: key);
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
+
+
+
+class HomeSite extends StatefulWidget {
+  @override
+  HomeSitePage createState() => HomeSitePage();
+}
+class HomeSitePage extends State<HomeSite> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final TextEditingController homesitetitle = new TextEditingController();
+  addHomesite(String homesitetext) async {
+    final SharedPreferences prefs = await _prefs;
+    var jsonResponse = null;
+
+    final queryParameters = {'action': 'addCategory', 'category':'homesite', 'title': homesitetext};
+    var url = Uri.https(
+        'www.longocorporation.com', '/jobs/api.php', queryParameters);
+
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        setState(() {
+          // _isLoading = false;
+        });
+        var message = jsonResponse['message'];
+        if (jsonResponse['success'] == true) {
+          var message = jsonResponse['message'];
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString("homesiteid", message);
+          Navigator .push(
+              context, MaterialPageRoute(
+              builder: (context) => HomeCheckList()
+          ));
+
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +172,7 @@ class homesitePage extends StatelessWidget {
 
                               ),
                               TextFormField(
+                                controller: homesitetitle,
                                 // focusNode: f1,
                                 // controller: txtEmail,
                                 style: TextStyle(
@@ -174,10 +217,8 @@ class homesitePage extends StatelessWidget {
                                     minimumSize: const Size.fromHeight(50), // NEW
                                   ),
                                   onPressed: () {
-                                    Navigator .push(
-                                        context, MaterialPageRoute(
-                                        builder: (context) => homechecklistPage()
-                                    ));
+                                    addHomesite(homesitetitle.text);
+
                                   },
                                   child: const Text(
                                     'Next',
