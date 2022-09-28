@@ -47,7 +47,7 @@ class _ForgotPageState extends State<ForgotPage> {
 
         } else {
           Fluttertoast.showToast(
-              msg: "Sorry, try again\n$message",
+              msg: "Sorry, try again",
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.CENTER,
               timeInSecForIosWeb: 1,
@@ -65,7 +65,7 @@ class _ForgotPageState extends State<ForgotPage> {
         // _isLoading = false;
       });
       Fluttertoast.showToast(
-          msg: "$email Message2: $jsonStr",
+          msg: "Something went wrong, try again later",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -74,6 +74,19 @@ class _ForgotPageState extends State<ForgotPage> {
           fontSize: 16.0
       );
     }
+  }
+  bool validemail = false;
+
+  Future<bool> validateEmail(String text) async {
+
+    setState(() {
+      validemail = RegExp(
+          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+          .hasMatch(text);
+    });
+    return RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(text);
   }
 
   @override
@@ -211,7 +224,8 @@ class _ForgotPageState extends State<ForgotPage> {
                                 style: TextStyle(
                                   color: Color(0xff0D529A),
                                 ),
-                                decoration: const InputDecoration(
+                                onChanged: (text){ validateEmail(text); },
+                                decoration: InputDecoration(
                                   contentPadding: EdgeInsets.all(20),
                                   labelStyle: TextStyle(
                                     color: Color(0xff051C48),
@@ -226,11 +240,11 @@ class _ForgotPageState extends State<ForgotPage> {
                                   fillColor: Color(0xffF2F3F5),
                                   floatingLabelBehavior:FloatingLabelBehavior.always,
                                   labelText: "",
-                                  hintText: "tedpickus@example.com",
-                                  hintStyle: TextStyle(fontSize: 16.0, color: Color(0xff051C48)),
+                                  hintText: "Enter Email Address",
+                                  hintStyle: TextStyle(fontSize: 16.0, color: Color(0xffDDDDDD)),
                                   suffixIcon: Padding(
                                     padding: const EdgeInsetsDirectional.only(end: 12.0),
-                                    child: Icon(Icons.check, color: Color(0xff051C48),), // myIcon is a 48px-wide widget.
+                                    child: Icon(Icons.check, color: validemail==true ? Colors.green : Colors.black12),
                                   ),
                                 ),
                               ),

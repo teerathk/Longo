@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:intl/intl.dart';
 class HomeSubmit extends StatefulWidget {
   @override
   HomeSubmitPage createState() => HomeSubmitPage();
@@ -38,7 +39,7 @@ class HomeSubmitPage extends State<HomeSubmit> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var homesiteid = "0";
     if (prefs.containsKey("homesiteid") &&
-        prefs.containsKey("homesiteid") != "0") {
+        prefs.getString("homesiteid").toString() != "0") {
       homesiteid = prefs.getString("homesiteid").toString();
     } else if (prefs.containsKey("skirtingid")) {
       homesiteid = prefs.getString("skirtingid").toString();
@@ -69,7 +70,7 @@ class HomeSubmitPage extends State<HomeSubmit> {
               textColor: Colors.white,
               fontSize: 16.0);
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => dashboardPage()));
+              MaterialPageRoute(builder: (context) => Dashboard()));
           setState(() {
             // _isLoading = false;
           });
@@ -103,7 +104,31 @@ class HomeSubmitPage extends State<HomeSubmit> {
       //     fontSize: 16.0);
     }
   }
+  DateTime selectedDate = DateTime.now();
 
+
+  getFormatedDate(_date) {
+    var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    var inputDate = inputFormat.parse(_date);
+    var outputFormat = DateFormat('yyyy-MM-dd');
+    return outputFormat.format(inputDate);
+  }
+  String dateformated="";
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+
+
+        selectedDate = picked;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     String userPhoto = "";
@@ -191,7 +216,7 @@ class HomeSubmitPage extends State<HomeSubmit> {
                 style: TextStyle(
                   color: Color(0xff0D529A),
                 ),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   // hintText: "user@example.com",
                   hintStyle: TextStyle(
                     fontSize: 16,
@@ -234,7 +259,15 @@ class HomeSubmitPage extends State<HomeSubmit> {
                 style: TextStyle(
                   color: Color(0xff0D529A),
                 ),
-                decoration: const InputDecoration(
+
+                onTap: () async{
+
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                  _selectDate(context);
+
+                  DateSubmissionController.text = getFormatedDate(selectedDate.toString());
+                },
+                decoration: InputDecoration(
                   hintText: "mm/dd/yyyy",
                   hintStyle: TextStyle(
                     fontSize: 16,
@@ -251,7 +284,7 @@ class HomeSubmitPage extends State<HomeSubmit> {
                   labelText: "",
                   suffixIcon: Padding(
                     padding: const EdgeInsetsDirectional.only(end: 12.0),
-                    child: Icon(Icons.check, color: Colors.grey),
+                    child: Icon(Icons.calendar_today_outlined, color: Colors.grey),
                   ),
                 ),
               ),
