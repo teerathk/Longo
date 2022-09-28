@@ -7,13 +7,15 @@ import 'package:longo/pages/forgot.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:longo/pages/skirtingchecklist.dart';
+import 'package:longo/pages/skirtingsite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'homechecklist.dart';
 
-class InprogressHomeSite extends StatefulWidget {
+class InprogressSkirting extends StatefulWidget {
   @override
-  InprogressHomeSitePage createState() => InprogressHomeSitePage();
+  InprogressSkirtingPage createState() => InprogressSkirtingPage();
 }
 
 class Model {
@@ -23,7 +25,7 @@ class Model {
 
   Model(this.id, this.Site, this.datetime);
 }
-class InprogressHomeSitePage extends State<InprogressHomeSite> {
+class InprogressSkirtingPage extends State<InprogressSkirting> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool _isLoading = false;
   @override
@@ -38,9 +40,9 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
 
   OpenInprogressPage(String id) async {
     final SharedPreferences prefs = await _prefs;
-    prefs.setString("homesiteid", id);
-    if(prefs.containsKey("skirtingid")){
-      prefs.setString("skirtingid","0");
+    prefs.setString("skirtingid", id);
+    if(prefs.containsKey("homesiteid")){
+      prefs.setString("homesiteid","0");
     }
     // Fluttertoast.showToast(
     //     msg: "Received Checks $id",
@@ -57,7 +59,7 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
 
     Navigator .push(
         context, MaterialPageRoute(
-        builder: (context) => HomeCheckList()
+        builder: (context) => SkirtingCheckList()
     ));
 
   }
@@ -67,7 +69,7 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
   List<Model> myAllData = [];
   getInprogressHomesite() async {
     var jsonResponse = null;
-    final queryParameters = {'action': 'getinprogress', 'cat_type': 'homesite'};
+    final queryParameters = {'action': 'getinprogress', 'cat_type': 'skirting'};
     //
     // tablerowcustom.add(getTableRowHeader());
     // tablerowcustom.add(addTableTitlesRow());
@@ -277,9 +279,11 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
                           margin: EdgeInsets.only(left: 6),
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              image: const DecorationImage(
+                              image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: AssetImage('assets/images/logo.png') as ImageProvider
+                                image: NetworkImage(userPhoto == ""
+                                    ? "assets/images/logo.png"
+                                    : userPhoto),
                               )),
                         ),
                       ),
@@ -327,7 +331,7 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
               children: [
                 TableRow(children: [
                   const Text(
-                    "In Pogressss Homesite",
+                    "In Pogressss Skirting",
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xff0D529A),
@@ -352,6 +356,7 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
                             children: <Widget>[
                               Align(
                                 child: Text("Site",
+
                                     style: TextStyle(
                                         //fontWeight: FontWeight.bold,
                                         fontSize: 16,

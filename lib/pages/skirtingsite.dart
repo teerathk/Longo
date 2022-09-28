@@ -13,6 +13,34 @@ class SkirtingSite extends StatefulWidget {
 class SkirtingSitePage extends State<SkirtingSite> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController sirtingtitle = new TextEditingController();
+  var FullName = "";
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      // _isLoading = true;
+    });
+
+    checkLogin(); //call it over here
+  }
+  checkLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool("Login") == true) {
+      // FullName = prefs.getString("Name").toString();
+
+      setState(() {
+        // _isLoading = false;
+        FullName = "Hi " +
+            (prefs.getString("Name").toString()) +
+            " \nEnter Homesite Address below";
+      });
+    } else {
+      setState(() {
+        // _isLoading = false;
+        FullName = "Hi,\nEnter Homesite Address below";
+      });
+    }
+  }
 
   addHomesite(String homesitetext) async {
     final SharedPreferences prefs = await _prefs;
@@ -34,6 +62,9 @@ class SkirtingSitePage extends State<SkirtingSite> {
           var message = jsonResponse['message'];
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString("skirtingid", message);
+          if(prefs.containsKey("homesiteid")){
+            prefs.setString("homesiteid","0");
+          }
           Navigator .push(
               context, MaterialPageRoute(
               builder: (context) => SkirtingCheckList()
@@ -131,15 +162,23 @@ class SkirtingSitePage extends State<SkirtingSite> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                "Hi Kristin,\nEnter Skirting Site Address below",
+                              Text(
+                                FullName,
                                 style: TextStyle(
                                   fontSize: 40,
                                   color: Color(0xff0D529A),
                                 ),
                                 textAlign: TextAlign.left,
-
                               ),
+                              // const Text(
+                              //   "Hi Kristin,\nEnter Skirting Site Address below",
+                              //   style: TextStyle(
+                              //     fontSize: 40,
+                              //     color: Color(0xff0D529A),
+                              //   ),
+                              //   textAlign: TextAlign.left,
+                              //
+                              // ),
                               // const Padding(
                               //   padding: EdgeInsets.only(bottom: 20), //apply padding to all four sides
                               //   child: Text(

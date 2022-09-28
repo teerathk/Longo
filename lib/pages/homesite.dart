@@ -7,22 +7,54 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 
-
-
 class HomeSite extends StatefulWidget {
   @override
   HomeSitePage createState() => HomeSitePage();
 }
+
 class HomeSitePage extends State<HomeSite> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController homesitetitle = new TextEditingController();
+  var FullName = "";
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      // _isLoading = true;
+    });
+
+    checkLogin(); //call it over here
+  }
+  checkLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool("Login") == true) {
+      // FullName = prefs.getString("Name").toString();
+
+      setState(() {
+        // _isLoading = false;
+        FullName = "Hi " +
+            (prefs.getString("Name").toString()) +
+            " \nEnter Homesite Address below";
+      });
+    } else {
+      setState(() {
+        // _isLoading = false;
+        FullName = "Hi,\nEnter Homesite Address below";
+      });
+    }
+  }
+
   addHomesite(String homesitetext) async {
     final SharedPreferences prefs = await _prefs;
     var jsonResponse = null;
 
-    final queryParameters = {'action': 'addCategory', 'category':'homesite', 'title': homesitetext};
-    var url = Uri.https(
-        'www.longocorporation.com', '/jobs/api.php', queryParameters);
+    final queryParameters = {
+      'action': 'addCategory',
+      'category': 'homesite',
+      'title': homesitetext
+    };
+    var url =
+        Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
 
     var response = await http.get(url);
     if (response.statusCode == 200) {
@@ -36,11 +68,11 @@ class HomeSitePage extends State<HomeSite> {
           var message = jsonResponse['message'];
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString("homesiteid", message);
-          Navigator .push(
-              context, MaterialPageRoute(
-              builder: (context) => HomeCheckList()
-          ));
-
+          if(prefs.containsKey("skirtingid")){
+            prefs.setString("skirtingid","0");
+          }
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HomeCheckList()));
         }
       }
     }
@@ -56,7 +88,7 @@ class HomeSitePage extends State<HomeSite> {
     return Material(
       child: Scaffold(
         backgroundColor: const Color(0xffffffff),
-        resizeToAvoidBottomInset : false,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
@@ -67,7 +99,8 @@ class HomeSitePage extends State<HomeSite> {
               margin: EdgeInsets.only(top: 10),
               width: screenWidth,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0,horizontal: 15),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -82,9 +115,10 @@ class HomeSitePage extends State<HomeSite> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == "" ? "assets/images/logo.png" : userPhoto),
-                              )
-                          ),
+                                image: NetworkImage(userPhoto == ""
+                                    ? "assets/images/logo.png"
+                                    : userPhoto),
+                              )),
                         ),
                       ),
                     ),
@@ -105,9 +139,7 @@ class HomeSitePage extends State<HomeSite> {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {
-
-                            },
+                            onPressed: () {},
                           ),
                         ),
                       ),
@@ -118,12 +150,11 @@ class HomeSitePage extends State<HomeSite> {
             ),
           ],
         ),
-
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(30),
             child: SizedBox(
-                height: screenHeight/1.2,
+                height: screenHeight / 1.2,
                 child: Column(
                   children: [
                     Expanded(
@@ -133,15 +164,23 @@ class HomeSitePage extends State<HomeSite> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                "Hi Kristin \nwhere would you \nlike to go?",
+                              Text(
+                                FullName,
                                 style: TextStyle(
                                   fontSize: 40,
                                   color: Color(0xff0D529A),
                                 ),
                                 textAlign: TextAlign.left,
-
                               ),
+                              // const Text(
+                              //   FullName.isEmpty ? FullName.toString() : "",
+                              //   style: TextStyle(
+                              //     fontSize: 40,
+                              //     color: Color(0xff0D529A),
+                              //   ),
+                              //   textAlign: TextAlign.left,
+                              //
+                              // ),
                               // const Padding(
                               //   padding: EdgeInsets.only(bottom: 20), //apply padding to all four sides
                               //   child: Text(
@@ -156,21 +195,22 @@ class HomeSitePage extends State<HomeSite> {
                               //
                               // ),
                               Container(
-                                height: 20,
+                                height: 30,
                               ),
-                              const Padding(
-                                padding: EdgeInsets.only(bottom: 10), //apply padding to all four sides
-                                child: Text(
-                                  "Home Site",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    height: 0,
-                                    color: Color(0x60202020),
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-
-                              ),
+                              Container(height: 20),
+                              // const Padding(
+                              //   padding: EdgeInsets.only(bottom: 10), //apply padding to all four sides
+                              //   child: Text(
+                              //     "Home Site",
+                              //     style: TextStyle(
+                              //       fontSize: 14,
+                              //       height: 0,
+                              //       color: Color(0x60202020),
+                              //     ),
+                              //     textAlign: TextAlign.left,
+                              //   ),
+                              //
+                              // ),
                               TextFormField(
                                 controller: homesitetitle,
                                 // focusNode: f1,
@@ -184,17 +224,19 @@ class HomeSitePage extends State<HomeSite> {
                                     color: Color(0xff051C48),
                                     fontSize: 11,
                                     fontFamily: 'AvenirLight',
-
                                   ),
                                   border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
                                   ),
                                   filled: true,
                                   fillColor: Color(0xffF2F3F5),
-                                  floatingLabelBehavior:FloatingLabelBehavior.always,
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.always,
                                   labelText: "",
-                                  hintText: "4949 Forest Ave",
-                                  hintStyle: TextStyle(fontSize: 16.0, color: Color(0xff051C48)),
+                                  hintText: "",
+                                  hintStyle: TextStyle(
+                                      fontSize: 16.0, color: Color(0xff051C48)),
                                   // suffixIcon: Padding(
                                   //   padding: const EdgeInsetsDirectional.only(end: 12.0),
                                   //   child: Icon(Icons.place, color: Color(0xff051C48),), // myIcon is a 48px-wide widget.
@@ -214,33 +256,25 @@ class HomeSitePage extends State<HomeSite> {
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     primary: Color(0xff0D529A),
-                                    minimumSize: const Size.fromHeight(50), // NEW
+                                    minimumSize:
+                                        const Size.fromHeight(50), // NEW
                                   ),
                                   onPressed: () {
                                     addHomesite(homesitetitle.text);
-
                                   },
                                   child: const Text(
                                     'Next',
-                                    style: TextStyle(
-                                        fontSize: 16
-                                    ),
+                                    style: TextStyle(fontSize: 16),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                        )
-                    ),
+                        )),
                   ],
-                )
-            ),
-
+                )),
           ),
-
         ),
-
-
       ),
     );
   }

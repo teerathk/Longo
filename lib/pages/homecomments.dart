@@ -15,6 +15,176 @@ class HomeCommentsPage extends State<HomeComments> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController CommentsController = new TextEditingController();
 
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _isLoading = true;
+    });
+    getDBPosts(); //call it over here
+  }
+
+  var ArrayList = null;
+  var commentWidgets = <Widget>[];
+
+  submitComment(String comment) async {
+    setState(() {
+      _isLoading = true;
+    });
+    var jsonResponse = null;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var homesiteid = "0";
+    if (prefs.containsKey("homesiteid") &&
+        prefs.containsKey("homesiteid") != "0") {
+      homesiteid = prefs.getString("homesiteid").toString();
+    } else if (prefs.containsKey("skirtingid")) {
+      homesiteid = prefs.getString("skirtingid").toString();
+    }
+
+    final queryParameters = {
+      'action': 'setposts',
+      'category_id': homesiteid,
+      'post': comment
+    };
+    var url =
+        Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+    var response = await http.get(url);
+    var jsonStr = response.body.toString();
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        commentWidgets.add(getPosts(comment, "0"));
+        if (jsonResponse['success'] == true) {
+          CommentsController.clear();
+          Fluttertoast.showToast(
+              msg: "Posted Successfully",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.TOP,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Fluttertoast.showToast(
+          msg: "Unable to post",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
+  getDBPosts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String homesiteid = "0";
+    if (prefs.containsKey("homesiteid")) {
+      homesiteid = prefs.getString("homesiteid").toString();
+    }
+
+    var jsonResponse = null;
+    final queryParameters = {'action': 'getposts', 'category_id': homesiteid};
+    var url =
+        Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+
+    // var url = Uri.https('127.0.0.1', '/jobs/api.php', queryParameters);
+    // var url = Uri.http('longonew.plego.pro', '/api.php', queryParameters);
+    var response = await http.get(url);
+
+    var jsonStr = response.body.toString();
+
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        var message = jsonResponse['message'];
+
+        if (jsonResponse['success'] == true) {
+          var message = jsonResponse['message'];
+          debugPrint('message: $message');
+          // var jsonBody = json.decode(message);
+          for (var data in message) {
+            commentWidgets.add(getPosts(data['comment'], data['created_at']));
+          }
+        }
+        // else {
+        //   Fluttertoast.showToast(
+        //       msg: "",
+        //       toastLength: Toast.LENGTH_LONG,
+        //       gravity: ToastGravity.CENTER,
+        //       timeInSecForIosWeb: 1,
+        //       backgroundColor: Colors.red,
+        //       textColor: Colors.white,
+        //       fontSize: 16.0);
+        // }
+        // print(response.body);
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      Fluttertoast.showToast(
+          msg: "Message2: $jsonStr",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
+  Widget getPosts(String comment, String datetime) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        color: Color(0xffF2F3F5),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            child: Text(datetime != "0" ? datetime : "Just posted...",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Color(0xff0D529A),
+                    fontFamily: 'RalewayLight')),
+            alignment: Alignment.centerLeft,
+          ),
+          Container(
+            height: 10,
+          ),
+          Text(
+            comment,
+            style: TextStyle(
+              fontSize: 14,
+            ),
+            //textAlign: TextAlign.left
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String userPhoto = "";
@@ -33,7 +203,8 @@ class HomeCommentsPage extends State<HomeComments> {
               margin: EdgeInsets.only(top: 10),
               width: screenWidth,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0,horizontal: 15),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -48,9 +219,10 @@ class HomeCommentsPage extends State<HomeComments> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == "" ? "assets/images/logo.png" : userPhoto),
-                              )
-                          ),
+                                image: NetworkImage(userPhoto == ""
+                                    ? "assets/images/logo.png"
+                                    : userPhoto),
+                              )),
                         ),
                       ),
                     ),
@@ -71,9 +243,7 @@ class HomeCommentsPage extends State<HomeComments> {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {
-
-                            },
+                            onPressed: () {},
                           ),
                         ),
                       ),
@@ -93,97 +263,23 @@ class HomeCommentsPage extends State<HomeComments> {
                     height: 20,
                   ),
                   const Text(
-                      "Comments",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff0D529A),
-                      ),
-                      //textAlign: TextAlign.right
+                    "Comments",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff0D529A),
+                    ),
+                    //textAlign: TextAlign.right
                   ),
                   Container(
                     height: 20,
                   ),
                   Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        // START COMMENTS HERE 1
-                        Container(
-                         margin: EdgeInsets.only(top: 10),
-                          padding: const EdgeInsets.all(20.0),
-                          decoration: BoxDecoration(
-                            color: Color(0xffF2F3F5),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Align(
-                                child: Text(
-                                    "Just posted...",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Color(0xff0D529A),
-                                        fontFamily: 'RalewayLight')
-                                ),
-                                alignment: Alignment.centerLeft,
-                              ),
-                              Container(
-                                height: 10,
-                              ),
-                              Text(
-                                "would not be displayed under the In Progress tab",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
-                                //textAlign: TextAlign.left
-                              ),
-                            ],
-                          ),
-                        ),
-                      // END COMMENTS HERE 1
-                        // START COMMENTS HERE 2
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          padding: const EdgeInsets.all(20.0),
-                          decoration: BoxDecoration(
-                            color: Color(0xffF2F3F5),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Align(
-                                child: Text(
-                                    "Just posted...",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Color(0xff0D529A),
-                                        fontFamily: 'RalewayLight')
-                                ),
-                                alignment: Alignment.centerLeft,
-                              ),
-                              Container(
-                                height: 10,
-                              ),
-                              Text(
-                                "would not be displayed under the In Progress tab",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
-                                //textAlign: TextAlign.left
-                              ),
-                            ],
-                          ),
-                        ),
-                        // END COMMENTS HERE 2
-
-
-                      ]
-                  ),
+                      children: _isLoading
+                          ? <Widget>[Center(child: CircularProgressIndicator())]
+                          : commentWidgets),
                   Container(
                     height: 30,
                   ),
@@ -208,26 +304,25 @@ class HomeCommentsPage extends State<HomeComments> {
                       maxLines: 5,
                       keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(
-                        hintText: "Add a Comment!",
-                        hintStyle: TextStyle(
-                          color: Color(0x60202020),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        )
-                      ),
+                          hintText: "Add a Comment!",
+                          hintStyle: TextStyle(
+                            color: Color(0x60202020),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          )),
                     ),
                   ),
                   Container(
                     height: 20,
                   ),
-
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: Color(0xff0D529A),
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
                     onPressed: () {
+                      submitComment(CommentsController.text);
                       // Navigator .push(
                       //     context, MaterialPageRoute(
                       //     builder: (context) => homechecklistPage()
@@ -247,19 +342,16 @@ class HomeCommentsPage extends State<HomeComments> {
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
                     onPressed: () {
-                      Navigator .push(
-                          context, MaterialPageRoute(
-                          builder: (context) => homeuploadimgPage()
-                      ));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeUploadImage()));
                     },
                     child: const Text(
                       'Next',
-                      style: TextStyle(fontSize: 16,color: Color(0xff0D529A)),
+                      style: TextStyle(fontSize: 16, color: Color(0xff0D529A)),
                     ),
                   ),
-                ]
-            )
-        )
-    );
+                ])));
   }
 }

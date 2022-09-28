@@ -1,7 +1,223 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:ui';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:longo/pages/dashboard.dart';
+import 'package:longo/pages/forgot.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:longo/pages/homesubmit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class HomeUploadImage extends StatefulWidget {
+  @override
+  HomeUploadImagePage createState() => HomeUploadImagePage();
+}
+
+class HomeUploadImagePage extends State<HomeUploadImage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  File? selectedImage;
+  var ImageWidgets = <Widget>[];
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _isLoading = true;
+    });
+
+    getCategoryImage(); //call it over here
+  }
+
+  bool _isLoading=false;
+  getCategoryImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var homesiteid;
+    if (prefs.containsKey("homesiteid") && prefs.containsKey("homesiteid")!="0") {
+      homesiteid = prefs.getString("homesiteid");
+    } else if (prefs.containsKey("skirtingid")) {
+      homesiteid = prefs.getString("skirtingid");
+    }
+    var jsonResponse = null;
+    final queryParameters = {
+      'action': 'getimages',
+      'cat_id': homesiteid
+    };
+    var url =
+    Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+    // var url = Uri.https('127.0.0.1', '/jobs/api.php', queryParameters);
+    // var url = Uri.http('longonew.plego.pro', '/api.php', queryParameters);
+    var response = await http.get(url);
+    var jsonStr = response.body.toString();
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        var message = jsonResponse['message'];
+
+        if (jsonResponse['success'] == true) {
+          var message = jsonResponse['message'];
+          print('message: $message');
+          // var jsonBody = json.decode(message);
+          for (var data in message) {
+
+            ImageWidgets.add(addImageString(data));
+          }
+          // debugPrint('list: $myAllData');
+          // Fluttertoast.showToast(
+          //     msg: "Received Checks",
+          //     toastLength: Toast.LENGTH_LONG,
+          //     gravity: ToastGravity.CENTER,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.green,
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
+          // Navigator .push(
+          //     context, MaterialPageRoute(
+          //     builder: (context) => dashboardPage()
+          // ));
+
+        }
+        // else {
+        //   Fluttertoast.showToast(
+        //       msg: "Sorry, try again\n$message",
+        //       toastLength: Toast.LENGTH_LONG,
+        //       gravity: ToastGravity.CENTER,
+        //       timeInSecForIosWeb: 1,
+        //       backgroundColor: Colors.red,
+        //       textColor: Colors.white,
+        //       fontSize: 16.0);
+        // }
+        // print(response.body);
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      Fluttertoast.showToast(
+          msg: "Message2: $jsonStr",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+
+  }
+
+  Future getImage() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    final imageTemp = File(image.path);
+    setState(() {
+
+      selectedImage = imageTemp;
+      ImageWidgets.add(addImageFile(selectedImage!));
+      uploadImages(selectedImage!);
+    });
+    //return image;
+  }
+
+  uploadImages(File path) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
 
-class homeuploadimgPage extends StatelessWidget {
+    var homesiteid;
+    if (prefs.containsKey("homesiteid")) {
+      homesiteid = prefs.getString("homesiteid");
+    } else if (prefs.containsKey("skirtingid")) {
+      homesiteid = prefs.getString("skirtingid");
+    }
+    var postUri = Uri.parse("https://www.longocorporation.com/jobs/api.php");
+    var request = new http.MultipartRequest("POST", postUri);
+    request.fields['action'] = 'uploadimage';
+    request.fields['cat_id'] = homesiteid;
+    request.files.add(
+        http.MultipartFile.fromBytes(
+            'image',
+            File(path.path).readAsBytesSync(),
+            filename: path.path.split("/").last
+        )
+    );
+    //https://longocorporation.com/images/uploads/1664310058image_picker7304483645174969105.jpg
+    // request.files.add(new http.MultipartFile.fromBytes(
+    //     'image', await File(path).readAsBytes(),
+    //     contentType: new MediaType('image', 'jpeg')));
+
+    var jsonResponse = null;
+    request.send().then((response) {
+      if (response.statusCode == 200) {
+        // final respStr = response.stream.bytesToString();
+        // jsonResponse = json.decode(respStr.toString());
+        print("Uploaded!");
+        // print("Uploaded!: "+jsonResponse.toString());
+        Fluttertoast.showToast(
+            msg: "Uploaded Successfully",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+      }
+    });
+  }
+
+  //resize the image
+  Future<void> _getImage(BuildContext context) async {
+    if (selectedImage != null) {
+      var imageFile = selectedImage;
+      /*var image = imageLib.decodeImage(imageFile.readAsBytesSync());
+      fileName = basename(imageFile.path);
+      image = imageLib.copyResize(image,
+          width: (MediaQuery.of(context).size.width * 0.8).toInt(),
+          height: (MediaQuery.of(context).size.height * 0.7).toInt());
+      _image = image;*/
+    }
+  }
+  Stack addImageString(String image) {
+    return Stack(
+      children: [
+        SizedBox(
+          height: 30,
+        ),
+        Image.network(
+          "https://longocorporation.com/images/uploads/"+image!,
+          width: 250,
+          height: 250,
+          fit: BoxFit.fill,
+        ),
+      ],
+    );
+  }
+  Stack addImageFile(File image) {
+    return Stack(
+      children: [
+        SizedBox(
+          height: 30,
+        ),
+        image != null
+            ? Image.file(
+                image!,
+                width: 250,
+                height: 250,
+                fit: BoxFit.fill,
+              )
+            : Image.network(
+                "https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png"),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String userPhoto = "";
@@ -20,7 +236,8 @@ class homeuploadimgPage extends StatelessWidget {
               margin: EdgeInsets.only(top: 10),
               width: screenWidth,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0,horizontal: 15),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -35,9 +252,10 @@ class homeuploadimgPage extends StatelessWidget {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == "" ? "assets/images/logo.png" : userPhoto),
-                              )
-                          ),
+                                image: NetworkImage(userPhoto == ""
+                                    ? "assets/images/logo.png"
+                                    : userPhoto),
+                              )),
                         ),
                       ),
                     ),
@@ -58,9 +276,7 @@ class homeuploadimgPage extends StatelessWidget {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {
-
-                            },
+                            onPressed: () {},
                           ),
                         ),
                       ),
@@ -92,83 +308,11 @@ class homeuploadimgPage extends StatelessWidget {
                   Container(
                     height: 20,
                   ),
-            Container(
-                  child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Stack(
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        margin: EdgeInsets.only(left: 6,bottom: 6),
-                        decoration: BoxDecoration(
-                          //shape: BoxShape.circle,
-                            image: new DecorationImage(
-                              fit: BoxFit.contain,
-                              image: NetworkImage(userPhoto == "" ? "assets/images/bg1.jpg" : userPhoto),
-                            )
-                        ),
-                      ),
-                      Positioned( //<-- SEE HERE
-                        right: 0,
-                        top: 0,
-                        child: Container(
-                          child: Positioned(
-                              right: -1,
-                              top: -10,
-                              child: IconButton(
-                                  icon: Icon(
-                                    Icons.highlight_remove_outlined,
-                                    color: Color(0xff0D529A).withOpacity(0.5),
-                                    size: 30,
-                                  ),
-                                  onPressed: ()  {
-                                    // images.removeAt(index);
-                                  })),
-                        ),
-                      ),
-                    ],
+                  Container(
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: ImageWidgets),
                   ),
-
-                  Stack(
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        margin: EdgeInsets.only(left: 6,bottom: 6),
-                        decoration: BoxDecoration(
-                          //shape: BoxShape.circle,
-                            image: new DecorationImage(
-                              fit: BoxFit.contain,
-                              image: NetworkImage(userPhoto == "" ? "assets/images/bg1.jpg" : userPhoto),
-                            )
-                        ),
-                      ),
-                      Positioned( //<-- SEE HERE
-                        right: 0,
-                        top: 0,
-                        child: Container(
-                          child: Positioned(
-                              right: -1,
-                              top: -10,
-                              child: IconButton(
-                                  icon: Icon(
-                                    Icons.highlight_remove_outlined,
-                                    color: Color(0xff0D529A).withOpacity(0.5),
-                                    size: 30,
-                                  ),
-                                  onPressed: ()  {
-                                    // images.removeAt(index);
-                                  })),
-                        ),
-                      ),
-                    ],
-                  ),
-                  ]
-            ),
-            ),
-
                   const Text(
                     "Upload Images",
                     textAlign: TextAlign.left,
@@ -182,44 +326,41 @@ class homeuploadimgPage extends StatelessWidget {
                   Container(
                     height: 20,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child:
-                    Container(
-                      width: screenWidth,
-                      margin: EdgeInsets.fromLTRB(20, 10, 20, 30),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Color(0xffffffff),
-                            minimumSize: const Size.fromHeight(50), // NEW
-                          ),
-                          onPressed: () {},
-                          child: Column(
-                              children: <Widget>[
-                                Container(
-                                  height: 20,
-                                ),
-                                Align(
-                                  child: Text(
-                                      "Click here to upload images",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Color(0xff0D529A),
-                                          fontFamily: 'RalewayLight')
-                                  ),
-                                  alignment: Alignment.center,
-                                ),
-                                Container(
-                                  height: 20,
-                                ),
-                              ]
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(0.0),
+                  //   child: Container(
+                  //     width: screenWidth,
+                  //     margin: EdgeInsets.fromLTRB(20, 10, 20, 30),
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  //       child: ElevatedButton(
+                  //         style: ElevatedButton.styleFrom(
+                  //           primary: Color(0xffffffff),
+                  //           minimumSize: const Size.fromHeight(50), // NEW
+                  //         ),
+                  //         onPressed: () {
+                  //           getImage();
+                  //         },
+                  //         child: Column(children: <Widget>[
+                  //           Container(
+                  //             height: 20,
+                  //           ),
+                  //           Align(
+                  //             child: Text("Click here to upload images",
+                  //                 style: TextStyle(
+                  //                     fontSize: 14,
+                  //                     color: Color(0xff0D529A),
+                  //                     fontFamily: 'RalewayLight')),
+                  //             alignment: Alignment.center,
+                  //           ),
+                  //           Container(
+                  //             height: 20,
+                  //           ),
+                  //         ]),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Container(
                     height: 10,
                   ),
@@ -242,6 +383,7 @@ class homeuploadimgPage extends StatelessWidget {
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
                     onPressed: () {
+                      getImage();
                       // Navigator .push(
                       //     context, MaterialPageRoute(
                       //     builder: (context) => homechecklistPage()
@@ -261,19 +403,16 @@ class homeuploadimgPage extends StatelessWidget {
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
                     onPressed: () {
-                      // Navigator .push(
-                      //     context, MaterialPageRoute(
-                      //     builder: (context) => homechecklistPage()
-                      // ));
+                      Navigator .push(
+                          context, MaterialPageRoute(
+                          builder: (context) => HomeSubmit()
+                      ));
                     },
                     child: const Text(
                       'Next',
-                      style: TextStyle(fontSize: 16,color: Color(0xff0D529A)),
+                      style: TextStyle(fontSize: 16, color: Color(0xff0D529A)),
                     ),
                   ),
-                ]
-            )
-        )
-    );
+                ])));
   }
 }

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:longo/pages/homecomments.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class HomeCheckList extends StatefulWidget {
   @override
   HomeCheckListPage createState() => HomeCheckListPage();
@@ -19,9 +20,15 @@ class Model {
 
 class HomeCheckListPage extends State<HomeCheckList> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  bool _isLoading = false;
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _isLoading = true;
+    });
+
     getHomesiteOptions(); //call it over here
   }
 
@@ -32,15 +39,20 @@ class HomeCheckListPage extends State<HomeCheckList> {
   submitCheckbox(String id, bool check) async {
     var jsonResponse = null;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String checkstatus="0";
-    if(check){
-      checkstatus="1";
+    String checkstatus = "0";
+    if (check) {
+      checkstatus = "1";
     }
-    if(prefs.containsKey("homesiteid")){
+    if (prefs.containsKey("homesiteid")) {
       var homesiteid = prefs.getString("homesiteid");
-      final queryParameters = {'action': 'setchecks', 'cat_id': homesiteid,'checkid':id, 'check':checkstatus};
-      var url =
-      Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+      final queryParameters = {
+        'action': 'setchecks',
+        'cat_id': homesiteid,
+        'checkid': id,
+        'check': checkstatus
+      };
+      var url = Uri.https(
+          'www.longocorporation.com', '/jobs/api.php', queryParameters);
       var response = await http.get(url);
       var jsonStr = response.body.toString();
       if (response.statusCode == 200) {
@@ -48,7 +60,7 @@ class HomeCheckListPage extends State<HomeCheckList> {
 
         if (jsonResponse != null) {
           setState(() {
-            // _isLoading = false;
+            _isLoading = false;
           });
           if (jsonResponse['success'] == true) {
             Fluttertoast.showToast(
@@ -59,6 +71,7 @@ class HomeCheckListPage extends State<HomeCheckList> {
                 backgroundColor: Colors.green,
                 textColor: Colors.white,
                 fontSize: 16.0);
+
 
           }
         }
@@ -72,18 +85,62 @@ class HomeCheckListPage extends State<HomeCheckList> {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
-
     }
+  }
+
+  updateOnNext() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String homesiteid = "0";
+    if (prefs.containsKey("homesiteid")) {
+      homesiteid = prefs.getString("homesiteid").toString();
+    }
+    var jsonResponse = null;
+    final queryParameters = {
+      'action': 'getchecks',
+      'category': 'homesite',
+      'category_id': homesiteid
+    };
+    var url =
+    Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+    var response = await http.get(url);
+    var jsonStr = response.body.toString();
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+
+      if (jsonResponse != null) {
+        if (jsonResponse['success'] == true) {
+          var message = jsonResponse['message'];
+          debugPrint('message: $message');
+          // var jsonBody = json.decode(message);
+          prefs.setBool("IsComplete", true);
+          for (var data in message) {
+            bool checked = data['checked'] == 1 ? true : false;
+            if (!checked) {
+              prefs.setBool("IsComplete", false);
+            }
+          }
+        }
+      }
+    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomeComments()));
 
 
   }
   getHomesiteOptions() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(prefs.containsKey("homesiteid")) {
-      var homesiteid = prefs.getString("homesiteid");
+    String homesiteid = "0";
+    if (prefs.containsKey("homesiteid")) {
+      homesiteid = prefs.getString("homesiteid").toString();
     }
-      var jsonResponse = null;
-    final queryParameters = {'action': 'getchecks', 'category': 'homesite', 'category_id':'0'};
+    var jsonResponse = null;
+    final queryParameters = {
+      'action': 'getchecks',
+      'category': 'homesite',
+      'category_id': homesiteid
+    };
     var url =
         Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
     // var url = Uri.https('127.0.0.1', '/jobs/api.php', queryParameters);
@@ -95,7 +152,7 @@ class HomeCheckListPage extends State<HomeCheckList> {
 
       if (jsonResponse != null) {
         setState(() {
-          // _isLoading = false;
+          _isLoading = false;
         });
         var message = jsonResponse['message'];
 
@@ -103,22 +160,27 @@ class HomeCheckListPage extends State<HomeCheckList> {
           var message = jsonResponse['message'];
           debugPrint('message: $message');
           // var jsonBody = json.decode(message);
+          prefs.setBool("IsComplete", true);
           for (var data in message) {
-            bool checked = data['checked']==1 ? true : false;
-            commentWidgets
-                .add(checkItemBuilder(context, data['check_text'], data['id'], checked));
+            bool checked = data['checked'] == 1 ? true : false;
+            if(!checked){
+              prefs.setBool("IsComplete", false);
+            }
+            commentWidgets.add(checkItemBuilder(
+                context, data['check_text'], data['id'], checked));
             // myAllData.add(Model(
             //     data['id'], data['check_text']));
           }
+
           // debugPrint('list: $myAllData');
-          Fluttertoast.showToast(
-              msg: "Received Checks",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-              fontSize: 16.0);
+          // Fluttertoast.showToast(
+          //     msg: "Received Checks",
+          //     toastLength: Toast.LENGTH_LONG,
+          //     gravity: ToastGravity.CENTER,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.green,
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
           // Navigator .push(
           //     context, MaterialPageRoute(
           //     builder: (context) => dashboardPage()
@@ -138,7 +200,7 @@ class HomeCheckListPage extends State<HomeCheckList> {
       }
     } else {
       setState(() {
-        // _isLoading = false;
+        _isLoading = false;
       });
       Fluttertoast.showToast(
           msg: "Message2: $jsonStr",
@@ -259,7 +321,7 @@ class HomeCheckListPage extends State<HomeCheckList> {
                     // )
                   ),
                   Expanded(
-                      child: SingleChildScrollView(
+                      child: _isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
                           child: Container(
                               //height: screenHeight/1,
                               decoration: BoxDecoration(
@@ -281,10 +343,7 @@ class HomeCheckListPage extends State<HomeCheckList> {
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeComments()));
+                      updateOnNext();
                     },
                     child: const Text(
                       'Next',
@@ -295,9 +354,8 @@ class HomeCheckListPage extends State<HomeCheckList> {
   }
 
   Widget checkItemBuilder(@required BuildContext context, @required String text,
-      @required String id,bool checked,
+      @required String id, bool checked,
       {bool bottomBorder = true}) {
-
     return Container(
         decoration: bottomBorder
             ? BoxDecoration(
@@ -315,15 +373,14 @@ class HomeCheckListPage extends State<HomeCheckList> {
                       setState(() {
                         checked = !checked;
                         submitCheckbox(id, checked);
-                        Fluttertoast.showToast(
-
-                            msg: "$id Checkbox: $checked",
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
+                        // Fluttertoast.showToast(
+                        //     msg: "$id Checkbox: $checked",
+                        //     toastLength: Toast.LENGTH_LONG,
+                        //     gravity: ToastGravity.CENTER,
+                        //     timeInSecForIosWeb: 1,
+                        //     backgroundColor: Colors.green,
+                        //     textColor: Colors.white,
+                        //     fontSize: 16.0);
                       });
                     });
               })),
