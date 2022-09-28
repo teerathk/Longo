@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:longo/pages/Drawer.dart';
 import 'package:longo/pages/homesite.dart';
+import 'package:longo/pages/inprogresshomesite.dart';
+import 'package:longo/pages/inprogressskirting.dart';
 import 'package:longo/pages/skirtingsite.dart';
 
 class dashboardPage extends StatelessWidget {
@@ -188,7 +190,13 @@ class dashboardPage extends StatelessWidget {
                                 primary: Color(0xffffffff),
                                 minimumSize: const Size.fromHeight(50), // NEW
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator .push(
+                                    context, MaterialPageRoute(
+                                    builder: (context) => InprogressHomeSite()
+                                ));
+
+                              },
                               child: Column(
                                   children: <Widget>[
                                     Container(
@@ -272,7 +280,13 @@ class dashboardPage extends StatelessWidget {
                                 primary: Color(0xffffffff),
                                 minimumSize: const Size.fromHeight(50), // NEW
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator .push(
+                                    context, MaterialPageRoute(
+                                    builder: (context) => InprogressSkirting()
+                                ));
+
+                              },
                               child: Column(
                                   children: <Widget>[
                                     Container(

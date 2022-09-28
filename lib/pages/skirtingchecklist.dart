@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'homecomments.dart';
 class SkirtingCheckList extends StatefulWidget {
   @override
   SkirtingCheckListPage createState() => SkirtingCheckListPage();
@@ -12,9 +14,13 @@ class SkirtingCheckList extends StatefulWidget {
 class SkirtingCheckListPage extends State<SkirtingCheckList> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   var commentWidgets = <Widget>[];
+  bool _isLoading = false;
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _isLoading = true;
+    });
     getHomesiteOptions(); //call it over here
   }
 
@@ -39,7 +45,7 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
 
         if (jsonResponse != null) {
           setState(() {
-            // _isLoading = false;
+            _isLoading = false;
           });
           if (jsonResponse['success'] == true) {
             Fluttertoast.showToast(
@@ -51,6 +57,9 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
                 textColor: Colors.white,
                 fontSize: 16.0);
 
+            setState(() {
+              getHomesiteOptions();
+            });
           }
         }
       }
@@ -68,9 +77,52 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
 
 
   }
-  getHomesiteOptions() async {
+  updateOnNext() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String homesiteid = "0";
+    if (prefs.containsKey("skirtingid")) {
+      homesiteid = prefs.getString("skirtingid").toString();
+    }
     var jsonResponse = null;
-    final queryParameters = {'action': 'getchecks', 'category': 'skirting'};
+    final queryParameters = {'action': 'getchecks', 'category': 'skirting', 'category_id':homesiteid};
+    var url =
+    Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+    var response = await http.get(url);
+    var jsonStr = response.body.toString();
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+
+      if (jsonResponse != null) {
+        if (jsonResponse['success'] == true) {
+          var message = jsonResponse['message'];
+          debugPrint('message: $message');
+          // var jsonBody = json.decode(message);
+          prefs.setBool("IsComplete", true);
+          for (var data in message) {
+            bool checked = data['checked'] == 1 ? true : false;
+            if (!checked) {
+              prefs.setBool("IsComplete", false);
+            }
+          }
+        }
+      }
+    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomeComments()));
+
+
+  }
+  getHomesiteOptions() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String homesiteid = "0";
+    if (prefs.containsKey("skirtingid")) {
+      homesiteid = prefs.getString("skirtingid").toString();
+    }
+
+    var jsonResponse = null;
+    final queryParameters = {'action': 'getchecks', 'category': 'skirting', 'category_id':homesiteid};
     var url =
         Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
     // var url = Uri.https('127.0.0.1', '/jobs/api.php', queryParameters);
@@ -82,7 +134,7 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
 
       if (jsonResponse != null) {
         setState(() {
-          // _isLoading = false;
+          _isLoading = false;
         });
         var message = jsonResponse['message'];
 
@@ -90,21 +142,27 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
           var message = jsonResponse['message'];
           debugPrint('message: $message');
           // var jsonBody = json.decode(message);
+          prefs.setBool("IsComplete", true);
           for (var data in message) {
+            bool checked = data['checked'] == 1 ? true : false;
+            if(!checked){
+              prefs.setBool("IsComplete", false);
+            }
+
             commentWidgets
-                .add(checkItemBuilder(context, data['check_text'], data['id']));
+                .add(checkItemBuilder(context, data['check_text'], data['id'], checked));
             // myAllData.add(Model(
             //     data['id'], data['check_text']));
           }
           // debugPrint('list: $myAllData');
-          Fluttertoast.showToast(
-              msg: "Received Checks",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-              fontSize: 16.0);
+          // Fluttertoast.showToast(
+          //     msg: "Received Checks",
+          //     toastLength: Toast.LENGTH_LONG,
+          //     gravity: ToastGravity.CENTER,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.green,
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
           // Navigator .push(
           //     context, MaterialPageRoute(
           //     builder: (context) => dashboardPage()
@@ -124,7 +182,7 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
       }
     } else {
       setState(() {
-        // _isLoading = false;
+        _isLoading = false;
       });
       Fluttertoast.showToast(
           msg: "Message2: $jsonStr",
@@ -245,7 +303,7 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
                     // )
                   ),
                   Expanded(
-                      child: SingleChildScrollView(
+                      child: _isLoading ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
                           child: Container(
                               //height: screenHeight/1,
                               decoration: BoxDecoration(
@@ -257,7 +315,11 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
                                 borderRadius: BorderRadius.circular(8),
                                 //border: Border.all(color: Theme.of(context).dividerColor, width: 1)
                               ),
-                              child: Column(children: commentWidgets)))),
+                              child: Column(
+                                  children: commentWidgets
+
+                                  // children: commentWidgets
+                              )))),
                   Container(
                     height: 20,
                   ),
@@ -267,10 +329,7 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
                     onPressed: () {
-                      // Navigator .push(
-                      //     context, MaterialPageRoute(
-                      //     builder: (context) => homechecklistPage()
-                      // ));
+                      updateOnNext();
                     },
                     child: const Text(
                       'Next',
@@ -281,9 +340,9 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
   }
 
   Widget checkItemBuilder(@required BuildContext context, @required String text,
-      @required String id,
+      @required String id,bool checked,
       {bool bottomBorder = true}) {
-    bool checked = false;
+    // bool checked = false;
 
     return Container(
         decoration: bottomBorder

@@ -23,10 +23,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
 
-
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _isLoading = true;
+    });
+
     checkLogin();
     // var loginstatus = _prefs.then((SharedPreferences prefs) {
     //   return prefs.getBool('Login') ?? false;
@@ -68,17 +71,26 @@ class _LoginPageState extends State<LoginPage> {
             textColor: Colors.white,
             fontSize: 16.0
         );
+        setState(() {
+          _isLoading = false;
+        });
       Navigator .push(
           context, MaterialPageRoute(
           builder: (context) => dashboardPage()
       ));
 
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   signIn(String email, pass) async {
     final SharedPreferences prefs = await _prefs;
-
+    setState(() {
+      _isLoading = true;
+    });
     var jsonResponse = null;
     final queryParameters = {'action': 'login', 'user': email, 'pass': pass};
     // var url = Uri.http('longonew.plego.pro', '/api.php', queryParameters);
@@ -300,14 +312,15 @@ class _LoginPageState extends State<LoginPage> {
                 height: 20,
               ),
               Center(
-                child: Container(
+                child:
+                Container(
                   alignment: Alignment.bottomCenter,
                   height: screenHeight / 3,
                   //height: MediaQuery.of(context).size.height * 0.4,
                   width: screenWidth,
                   color: Colors.white,
                   //width: MediaQuery.of(context).size.width * 0.5, // Will take 50% of screen space
-                  child: ElevatedButton(
+                  child: _isLoading ? Center(child: CircularProgressIndicator()) : ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: Color(0xff0D529A),
                       minimumSize: const Size.fromHeight(50), // NEW
