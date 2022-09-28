@@ -1,238 +1,42 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
+class  MyDrawer extends StatelessWidget {
+  //const ({Key? key}) : super(key: key);
 
-class MyDrawer extends StatefulWidget {
-  @override
-  State<MyDrawer> createState() => _MyDrawerState();
-}
-
-class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: const Color(0xffF2F3F5),
       child: ListView(
-        // Important: Remove any padding from the ListView.
-        padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Align(
-                    child: Text(
-                      "WHIZCRIBS",
-                      style: TextStyle(
-                        //color: DefThemeColor.defColor,
-                        fontSize: 20,
-                        letterSpacing: 5,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    alignment: Alignment.centerLeft,
-                  ),
-                  IconButton(
-                    icon: Image.asset('assets/images/cross.png'),
-                    iconSize: 25,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
+          // DrawerHeader(
+          //     child: Text("I am Habib",
+          //         style: TextStyle(color: Colors.white),),
+          //         decoration: BoxDecoration(color: Colors.indigo),
+          // ),
+          UserAccountsDrawerHeader(
+            accountName: Text("Habib Khaskhely"), accountEmail: Text("habib@plego.com"),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: NetworkImage("https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: ListTile(
-              title: Row(
-                children: const [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25),
-                   // child: Icon(CupertinoIcons.home),
-                  ),
-                  Text(
-                    "Home",
-                    style: TextStyle(
-                      color: Color(0x80051C48),
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                Navigator.pushReplacementNamed(
-                    context, '/dashboard');
-              },
-            ),
+
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Text("Account"),
+            subtitle: Text("Personal"),
+            trailing: Icon(Icons.edit),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: ListTile(
-              title: Row(
-                children: const [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25),
-                    //child: Icon(CupertinoIcons.gift),
-                  ),
-                  Text(
-                    "Planned gifts",
-                    style: TextStyle(
-                      color: Color(0x80051C48),
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                Navigator.pushReplacementNamed(
-                    context, 'giftcard/giftcard-main');
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: ListTile(
-              title: Row(
-                children: const [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25),
-                    //child: Icon(CupertinoIcons.share_up),
-                  ),
-                  Text(
-                    "Refer",
-                    style: TextStyle(
-                      color: Color(0x80051C48),
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pushReplacementNamed(context, '/dashboard');
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: ListTile(
-              title: Row(
-                children: const [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25),
-                    //child: Icon(CupertinoIcons.profile_circled),
-                  ),
-                  Text(
-                    "Membership",
-                    style: TextStyle(
-                      color: Color(0x80051C48),
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                Navigator.pushReplacementNamed(
-                    context, 'membership/become-member'
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: ListTile(
-              title: Row(
-                children: const [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25),
-                    //child: Icon(CupertinoIcons.circle),
-                  ),
-                  Text(
-                    "About us",
-                    style: TextStyle(
-                      color: Color(0x80051C48),
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pushReplacementNamed(context, '');
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: ListTile(
-              title: Row(
-                children: const [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25),
-                    //child: Icon(CupertinoIcons.question_circle),
-                  ),
-                  Text(
-                    "Support",
-                    style: TextStyle(
-                      color: Color(0x80051C48),
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pushReplacementNamed(context, '');
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: ListTile(
-              title: Row(
-                children: const [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25),
-                    //child: Icon(CupertinoIcons.settings),
-                  ),
-                  Text(
-                    "Settings",
-                    style: TextStyle(
-                      color: Color(0x80051C48),
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pushReplacementNamed(context, '/setting');
-              },
-            ),
+          ListTile(
+            leading: Icon(Icons.email),
+            title: Text("Email"),
+            subtitle: Text("habib@plego.com"),
+            trailing: Icon(Icons.send),
           ),
         ],
       ),
     );
+
+    // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
   }
 }
-
-class GravityCompat {}

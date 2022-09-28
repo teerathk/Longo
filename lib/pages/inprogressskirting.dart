@@ -281,20 +281,11 @@ class InprogressSkirtingPage extends State<InprogressSkirting> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == ""
-                                    ? "assets/images/logo.png"
-                                    : userPhoto),
+                                image: AssetImage ('assets/images/logo.png'),
                               )),
                         ),
                       ),
                     ),
-                    // Flexible(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    //     child:
-                    //     Image.asset('assets/images/logo.png',width: 100,height: 100,),
-                    //   ),
-                    // ),
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerRight,

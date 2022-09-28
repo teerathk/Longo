@@ -44,19 +44,12 @@ class dashboardPage extends StatelessWidget {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == "" ? "assets/images/logo.png" : userPhoto),
+                                image: AssetImage ('assets/images/logo.png'),
                               )
                           ),
                         ),
                       ),
                     ),
-                    // Flexible(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    //     child:
-                    //     Image.asset('assets/images/logo.png',width: 100,height: 100,),
-                    //   ),
-                    // ),
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerRight,
@@ -68,7 +61,7 @@ class dashboardPage extends StatelessWidget {
                             iconSize: 50,
                             color: Color(0xff0D529A),
                             onPressed: () {
-                              globalKey.currentState?.openEndDrawer();
+                              //globalKey.currentState?.openEndDrawer();
                             },
                           ),
                         ),
@@ -80,7 +73,7 @@ class dashboardPage extends StatelessWidget {
             ),
           ],
         ),
-        endDrawer: MyDrawer(),
+      drawer: Drawer(),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(30),
@@ -93,52 +86,11 @@ class dashboardPage extends StatelessWidget {
                 2: FlexColumnWidth(2),
               },
                 children: [
-                  // TableRow(
-                  //     children: [
-                  //       Container(
-                  //         width: screenWidth,
-                  //         margin: EdgeInsets.fromLTRB(20, 10, 20, 00),
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  //           child: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               primary: Color(0xff0D529A),
-                  //               minimumSize: const Size.fromHeight(50), // NEW
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Column(
-                  //                 children: <Widget>[
-                  //                   Container(
-                  //                     height: 30,
-                  //                   ),
-                  //                   Align(
-                  //                     child: Text(
-                  //                         "Looking to \nsend a giftcard?",
-                  //                         style: TextStyle(
-                  //                             fontWeight: FontWeight.bold,
-                  //                             fontSize: 16,
-                  //                             color: Color(0xffffffff),
-                  //                             fontFamily: 'RalewayLight')
-                  //                     ),
-                  //                     alignment: Alignment.center,
-                  //                   ),
-                  //                   Container(
-                  //                     height: 30,
-                  //                   ),
-                  //
-                  //
-                  //                 ]
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ]
-                  // ),
                   TableRow(
                       children: [
                         Container(
                           width: screenWidth,
-                          margin: EdgeInsets.fromLTRB(20, 10, 20, 00),
+                          margin: EdgeInsets.fromLTRB(0, 10, 0, 00),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: ElevatedButton(
@@ -182,7 +134,7 @@ class dashboardPage extends StatelessWidget {
                       children: [
                         Container(
                           width: screenWidth,
-                          margin: EdgeInsets.fromLTRB(20, 10, 20, 30),
+                          margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: ElevatedButton(
@@ -228,7 +180,7 @@ class dashboardPage extends StatelessWidget {
                       children: [
                         Container(
                           width: screenWidth,
-                          margin: EdgeInsets.fromLTRB(20, 10, 20, 00),
+                          margin: EdgeInsets.fromLTRB(0, 10, 0, 00),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: ElevatedButton(
@@ -272,7 +224,7 @@ class dashboardPage extends StatelessWidget {
                       children: [
                         Container(
                           width: screenWidth,
-                          margin: EdgeInsets.fromLTRB(20, 10, 20, 30),
+                          margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: ElevatedButton(

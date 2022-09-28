@@ -219,9 +219,7 @@ class HomeCommentsPage extends State<HomeComments> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == ""
-                                    ? "assets/images/logo.png"
-                                    : userPhoto),
+                                image: AssetImage ('assets/images/logo.png'),
                               )),
                         ),
                       ),
@@ -256,102 +254,106 @@ class HomeCommentsPage extends State<HomeComments> {
         ),
         body: Padding(
             padding: const EdgeInsets.all(12),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    height: 20,
-                  ),
-                  const Text(
-                    "Comments",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff0D529A),
-                    ),
-                    //textAlign: TextAlign.right
-                  ),
-                  Container(
-                    height: 20,
-                  ),
-                  Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: _isLoading
-                          ? <Widget>[Center(child: CircularProgressIndicator())]
-                          : commentWidgets),
-                  Container(
-                    height: 30,
-                  ),
-                  const Text(
-                    "Write your comments",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0x60202020),
-                    ),
-                    //textAlign: TextAlign.right
-                  ),
-                  Container(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: TextFormField(
-                      controller: CommentsController,
-                      minLines: 2,
-                      maxLines: 5,
-                      keyboardType: TextInputType.multiline,
-                      decoration: InputDecoration(
-                          hintText: "Add a Comment!",
-                          hintStyle: TextStyle(
-                            color: Color(0x60202020),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          )),
-                    ),
-                  ),
-                  Container(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Color(0xff0D529A),
-                      minimumSize: const Size.fromHeight(50), // NEW
-                    ),
-                    onPressed: () {
-                      submitComment(CommentsController.text);
-                      // Navigator .push(
-                      //     context, MaterialPageRoute(
-                      //     builder: (context) => homechecklistPage()
-                      // ));
-                    },
-                    child: const Text(
-                      'Post',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  Container(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Color(0xffF2F3F5),
-                      minimumSize: const Size.fromHeight(50), // NEW
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeUploadImage()));
-                    },
-                    child: const Text(
-                      'Next',
-                      style: TextStyle(fontSize: 16, color: Color(0xff0D529A)),
-                    ),
-                  ),
-                ])));
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        height: 20,
+                      ),
+                      const Text(
+                        "Comments",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff0D529A),
+                        ),
+                        //textAlign: TextAlign.right
+                      ),
+                      Container(
+                        height: 20,
+                      ),
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: _isLoading
+                              ? <Widget>[Center(child: CircularProgressIndicator())]
+                              : commentWidgets),
+                      Container(
+                        height: 30,
+                      ),
+                      const Text(
+                        "Write your comments",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0x60202020),
+                        ),
+                        //textAlign: TextAlign.right
+                      ),
+                      Container(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(0.0),
+                        child: TextFormField(
+                          controller: CommentsController,
+                          minLines: 2,
+                          maxLines: 5,
+                          keyboardType: TextInputType.multiline,
+                          decoration: InputDecoration(
+                              hintText: "Add a Comment!",
+                              hintStyle: TextStyle(
+                                color: Color(0x60202020),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              )),
+                        ),
+                      ),
+                      Container(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xff0D529A),
+                          minimumSize: const Size.fromHeight(50), // NEW
+                        ),
+                        onPressed: () {
+                          submitComment(CommentsController.text);
+                          // Navigator .push(
+                          //     context, MaterialPageRoute(
+                          //     builder: (context) => homechecklistPage()
+                          // ));
+                        },
+                        child: const Text(
+                          'Post',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      Container(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xffF2F3F5),
+                          minimumSize: const Size.fromHeight(50), // NEW
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeUploadImage()));
+                        },
+                        child: const Text(
+                          'Next',
+                          style: TextStyle(fontSize: 16, color: Color(0xff0D529A)),
+                        ),
+                      ),
+                    ]),
+            ),
+            ));
   }
 }

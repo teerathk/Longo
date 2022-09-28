@@ -174,19 +174,22 @@ class _LoginPageState extends State<LoginPage> {
       color: Colors.white,
       child: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(30),
+          padding: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                height: 30,
+              ),
               const Text(
                 "Welcome to \nLongo Corporation!",
                 style: TextStyle(
-                  fontSize: 40,
+                  fontSize: 36,
                   color: Color(0xff0D529A),
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.only(bottom: 20,),
                 //apply padding to all four sides
                 child: Text(
                   "Sign in to your account.",
@@ -247,7 +250,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     const Padding(
-                      padding: EdgeInsets.only(bottom: 5),
+                      padding: EdgeInsets.only(bottom: 0),
                       //apply padding to all four sides
                       child: Text(
                         "Password",
@@ -260,7 +263,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(bottom: 5),
+                      padding: EdgeInsets.only(bottom: 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: Colors.grey,
@@ -309,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Container(
-                height: 20,
+                height: 10,
               ),
               Center(
                 child:

@@ -190,11 +190,18 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
         SizedBox(
           height: 30,
         ),
-        Image.network(
-          "https://longocorporation.com/images/uploads/"+image!,
-          width: 250,
-          height: 250,
-          fit: BoxFit.fill,
+        Padding( padding:
+        const EdgeInsets.only(right: 5),
+          child: Image.network(
+            "https://longocorporation.com/images/uploads/"+image!,
+            width: 70,
+            height: 70,
+            fit: BoxFit.fill,
+          ),
+    ),
+
+        SizedBox(
+          height: 20,
         ),
       ],
     );
@@ -205,15 +212,18 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
         SizedBox(
           height: 30,
         ),
-        image != null
+    Padding( padding:
+    const EdgeInsets.only(right: 5),
+        child: image != null
             ? Image.file(
                 image!,
-                width: 250,
-                height: 250,
+                width: 70,
+                height: 70,
                 fit: BoxFit.fill,
               )
             : Image.network(
                 "https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png"),
+    ),
       ],
     );
   }
@@ -252,20 +262,11 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == ""
-                                    ? "assets/images/logo.png"
-                                    : userPhoto),
+                                image: AssetImage ('assets/images/logo.png'),
                               )),
                         ),
                       ),
                     ),
-                    // Flexible(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    //     child:
-                    //     Image.asset('assets/images/logo.png',width: 100,height: 100,),
-                    //   ),
-                    // ),
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerRight,
@@ -308,10 +309,19 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
                   Container(
                     height: 20,
                   ),
+
                   Container(
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: ImageWidgets),
+                    width: screenWidth,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: ImageWidgets),
+                      ),
+
+                  ),
+                  SizedBox(
+                    height: 10,
                   ),
                   const Text(
                     "Upload Images",

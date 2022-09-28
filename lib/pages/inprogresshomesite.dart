@@ -121,7 +121,7 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
               timeInSecForIosWeb: 1,
               backgroundColor: Colors.red,
               textColor: Colors.white,
-              fontSize: 16.0);
+              fontSize: 26.0);
         }
         // print(response.body);
       }
@@ -160,7 +160,7 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
     return TableRow(children: [
       Container(
         width: screenWidth,
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 00),
+        margin: EdgeInsets.fromLTRB(0, 10, 0, 00),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: ElevatedButton(
@@ -204,7 +204,7 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
     return TableRow(children: [
       Container(
         width: screenWidth,
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 00),
+        margin: EdgeInsets.fromLTRB(0, 10, 0, 00),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: ElevatedButton(
@@ -277,20 +277,13 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
                           margin: EdgeInsets.only(left: 6),
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              image: const DecorationImage(
+                              image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: AssetImage('assets/images/logo.png') as ImageProvider
+                                image: AssetImage ('assets/images/logo.png'),
                               )),
                         ),
                       ),
                     ),
-                    // Flexible(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    //     child:
-                    //     Image.asset('assets/images/logo.png',width: 100,height: 100,),
-                    //   ),
-                    // ),
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerRight,
@@ -338,7 +331,7 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
                 TableRow(children: [
                   Container(
                     width: screenWidth,
-                    margin: EdgeInsets.fromLTRB(10, 10, 10, 00),
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 00),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: ElevatedButton(

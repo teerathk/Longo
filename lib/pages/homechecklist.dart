@@ -247,9 +247,7 @@ class HomeCheckListPage extends State<HomeCheckList> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == ""
-                                    ? "assets/images/logo.png"
-                                    : userPhoto),
+                                image: AssetImage ('assets/images/logo.png'),
                               )),
                         ),
                       ),

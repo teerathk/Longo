@@ -21,65 +21,6 @@ class resetpassword extends StatelessWidget {
     return Material(
       child: Scaffold(
         backgroundColor: const Color(0xffffffff),
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
-          bottomOpacity: 0.0,
-          elevation: 0.0,
-          actions: [
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              width: screenWidth,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0,horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          margin: EdgeInsets.only(left: 6),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: new DecorationImage(
-                                fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == "" ? "assets/images/logo.png" : userPhoto),
-                              )
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Flexible(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    //     child:
-                    //     Image.asset('assets/images/logo.png',width: 100,height: 100,),
-                    //   ),
-                    // ),
-                    Flexible(
-                      child: Container(
-                        alignment: Alignment.centerRight,
-                        child: FittedBox(
-                          fit: BoxFit.fill,
-                          child: IconButton(
-                            icon: const Icon(Icons.menu_rounded),
-                            padding: EdgeInsets.only(left: 0),
-                            iconSize: 50,
-                            color: Color(0xff0D529A),
-                            onPressed: () {},
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(30),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:longo/pages/homechecklist.dart';
-
+import 'package:longo/pages/Drawer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -115,20 +115,11 @@ class HomeSitePage extends State<HomeSite> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(userPhoto == ""
-                                    ? "assets/images/logo.png"
-                                    : userPhoto),
+                                image: AssetImage ('assets/images/logo.png'),
                               )),
                         ),
                       ),
                     ),
-                    // Flexible(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    //     child:
-                    //     Image.asset('assets/images/logo.png',width: 100,height: 100,),
-                    //   ),
-                    // ),
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerRight,
