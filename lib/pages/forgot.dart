@@ -101,6 +101,7 @@ class _ForgotPageState extends State<ForgotPage> {
         backgroundColor: const Color(0xffffffff),
         resizeToAvoidBottomInset : false,
         appBar: AppBar(
+          elevation: 0.0,
           backgroundColor: const Color(0xffffffff),
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: const Color(0xff0D529A)),

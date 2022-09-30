@@ -336,8 +336,8 @@ class _LoginPageState extends State<LoginPage> {
                         // Based on passwordVisible state choose the icon
 
                         _passwordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: emailClicked ==true ? Theme.of(context).primaryColorDark : Colors.black12,
                       ),
                       onPressed: () {
