@@ -19,13 +19,30 @@ class SkirtingSitePage extends State<SkirtingSite> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final TextEditingController sirtingtitle = new TextEditingController();
   var FullName = "";
+
+  String name="";
+  String email="";
+  initSession() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool("Login") == true) {
+      // FullName = prefs.getString("Name").toString();
+
+      setState(() {
+        // _isLoading = false;
+        name = prefs.getString("Name").toString();
+        email = prefs.getString("Email").toString();
+      });
+    }
+
+  }
+
   @override
   void initState() {
     super.initState();
     setState(() {
       // _isLoading = true;
     });
-
+    initSession();
     checkLogin(); //call it over here
   }
   checkLogin() async {
@@ -163,7 +180,7 @@ class SkirtingSitePage extends State<SkirtingSite> {
                               Text(
                                 FullName,
                                 style: TextStyle(
-                                  fontSize: 40,
+                                  fontSize: 36,
                                   color: Color(0xff0D529A),
                                 ),
                                 textAlign: TextAlign.left,
