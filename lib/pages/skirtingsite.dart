@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:longo/pages/homesite.dart';
+import 'package:longo/pages/login.dart';
 import 'package:longo/pages/skirtingchecklist.dart';
 
 import 'dart:convert';
@@ -20,6 +23,20 @@ class SkirtingSitePage extends State<SkirtingSite> {
   final TextEditingController sirtingtitle = new TextEditingController();
   var FullName = "";
 
+  Logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    Fluttertoast.showToast(
+        msg: "Logout Successfully",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
+  }
   String name="";
   String email="";
   initSession() async {
@@ -65,6 +82,19 @@ class SkirtingSitePage extends State<SkirtingSite> {
   }
 
   addHomesite(String homesitetext) async {
+    if(homesitetext.isEmpty){
+      Fluttertoast.showToast(
+          msg: "Enter Address",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+      return;
+    }
+
     final SharedPreferences prefs = await _prefs;
     var jsonResponse = null;
 
@@ -107,7 +137,61 @@ class SkirtingSitePage extends State<SkirtingSite> {
     return Material(
       child: Scaffold(
         key: _scaffoldKey,
-        drawer: new MyDrawer(),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              // DrawerHeader(
+              //     child: Text("I am Habib",
+              //         style: TextStyle(color: Colors.white),),
+              //         decoration: BoxDecoration(color: Colors.indigo),
+              // ),
+              UserAccountsDrawerHeader(
+                accountName: Text(name), accountEmail: Text(email),
+                currentAccountPicture: CircleAvatar(
+                  radius: 110,
+
+                  backgroundImage: AssetImage('assets/images/logo.png'),
+                  //backgroundImage: NetworkImage("https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"),
+                ),
+              ),
+
+              ListTile(
+                leading: Icon(Icons.add_box_sharp),
+                title: Text("Homesite"),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomeSite()));
+                  _scaffoldKey.currentState?.openEndDrawer();
+                },
+                //subtitle: Text("In Progress Homesite"),
+                //trailing: Icon(Icons.edit),
+              ),
+              ListTile(
+                leading: Icon(Icons.add_box_sharp),
+                title: Text("Skirting"),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SkirtingSite()));
+                  _scaffoldKey.currentState?.openEndDrawer();
+                },
+                //subtitle: Text("In Progress Homesite"),
+                //trailing: Icon(Icons.edit),
+              ),
+              ListTile(
+                leading: Icon(Icons.logout),
+                title: Text("Logout"),
+                //subtitle: Text("habib@plego.com"),
+                onTap: () {
+                  Logout();
+                },
+              ),
+            ],
+          ),
+        ),
         backgroundColor: const Color(0xffffffff),
         resizeToAvoidBottomInset : false,
         appBar: AppBar(

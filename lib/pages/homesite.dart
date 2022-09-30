@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:longo/pages/homechecklist.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:longo/pages/login.dart';
 import 'package:longo/pages/skirtingsite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,6 +48,21 @@ class HomeSitePage extends State<HomeSite> {
     checkLogin(); //call it over here
     initSession();
   }
+
+  Logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    Fluttertoast.showToast(
+        msg: "Logout Successfully",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
+  }
   checkLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print("Debug: "+prefs.getBool("Login").toString());
@@ -78,6 +94,18 @@ class HomeSitePage extends State<HomeSite> {
   }
 
   addHomesite(String homesitetext) async {
+    if(homesitetext.isEmpty){
+      Fluttertoast.showToast(
+          msg: "Enter Address",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+      return;
+    }
     final SharedPreferences prefs = await _prefs;
     var jsonResponse = null;
 
@@ -140,36 +168,37 @@ class HomeSitePage extends State<HomeSite> {
               ),
 
               ListTile(
-                leading: Icon(Icons.home),
+                leading: Icon(Icons.add_box_sharp),
                 title: Text("Homesite"),
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => HomeSite()));
+                  _scaffoldKey.currentState?.openEndDrawer();
                 },
                 //subtitle: Text("In Progress Homesite"),
                 //trailing: Icon(Icons.edit),
               ),
               ListTile(
-                leading: Icon(Icons.place),
+                leading: Icon(Icons.add_box_sharp),
                 title: Text("Skirting"),
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => SkirtingSite()));
+                  _scaffoldKey.currentState?.openEndDrawer();
                 },
                 //subtitle: Text("In Progress Homesite"),
                 //trailing: Icon(Icons.edit),
               ),
               ListTile(
-                leading: Icon(Icons.email,color: Colors.white,),
-                title: Text("Sign out"),
+                leading: Icon(Icons.logout),
+                title: Text("Logout"),
                 //subtitle: Text("habib@plego.com"),
-                trailing: Icon(Icons.logout),
                 onTap: () {
-                  Navigator.pop(context);
+                  Logout();
                 },
               ),
             ],
@@ -340,6 +369,7 @@ class HomeSitePage extends State<HomeSite> {
                                         const Size.fromHeight(50), // NEW
                                   ),
                                   onPressed: () {
+
                                     addHomesite(homesitetitle.text);
                                   },
                                   child: const Text(

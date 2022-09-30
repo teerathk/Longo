@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:longo/pages/login.dart';
 
 class ForgotPage extends StatefulWidget {
   @override
@@ -158,6 +159,8 @@ class _ForgotPageState extends State<ForgotPage> {
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                   ),
                   onPressed: () {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => LoginPage()));
                   },
                   child: const Text("Cancel"),
                 ),
