@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:longo/pages/dashboard.dart';
+import 'package:longo/pages/drawer.dart';
 import 'package:longo/pages/forgot.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert' as convert;
@@ -230,11 +230,14 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     String userPhoto = "";
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final globalKey = GlobalKey<ScaffoldState>();
     return Scaffold(
+        key: _scaffoldKey,
+        drawer: new MyDrawer(),
         backgroundColor: const Color(0xfffafafa),
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -277,7 +280,8 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {},
+                            onPressed: () =>
+                                _scaffoldKey.currentState?.openDrawer(),
                           ),
                         ),
                       ),

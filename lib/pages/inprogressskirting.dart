@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:longo/pages/dashboard.dart';
+import 'package:longo/pages/drawer.dart';
 import 'package:longo/pages/forgot.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert' as convert;
@@ -249,11 +249,14 @@ class InprogressSkirtingPage extends State<InprogressSkirting> {
   @override
   Widget build(BuildContext context) {
     String userPhoto = "";
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Material(
       child: Scaffold(
+        key: _scaffoldKey,
+        drawer: new MyDrawer(),
         backgroundColor: const Color(0xffffffff),
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -296,7 +299,8 @@ class InprogressSkirtingPage extends State<InprogressSkirting> {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {},
+                            onPressed: () =>
+                                _scaffoldKey.currentState?.openDrawer(),
                           ),
                         ),
                       ),

@@ -69,6 +69,7 @@ class DashboardPage extends State<Dashboard> {
     return new WillPopScope(
         onWillPop: _onWillPop,
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: _title,
           home: Scaffold(
             key: _scaffoldKey,

@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:longo/pages/drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'homecomments.dart';
@@ -198,10 +199,13 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
   @override
   Widget build(BuildContext context) {
     String userPhoto = "";
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final globalKey = GlobalKey<ScaffoldState>();
     return Scaffold(
+        key: _scaffoldKey,
+        drawer: new MyDrawer(),
         backgroundColor: const Color(0xfffafafa),
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -244,7 +248,8 @@ class SkirtingCheckListPage extends State<SkirtingCheckList> {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {},
+                            onPressed: () =>
+                                _scaffoldKey.currentState?.openDrawer(),
                           ),
                         ),
                       ),

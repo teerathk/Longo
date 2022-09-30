@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:longo/pages/homeuploadimage.dart';
+import 'package:longo/pages/drawer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -187,11 +188,14 @@ class HomeCommentsPage extends State<HomeComments> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     String userPhoto = "";
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final globalKey = GlobalKey<ScaffoldState>();
     return Scaffold(
+        key: _scaffoldKey,
+        drawer: MyDrawer(),
         backgroundColor: const Color(0xfffafafa),
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -241,7 +245,8 @@ class HomeCommentsPage extends State<HomeComments> {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {},
+                            onPressed: () =>
+                                _scaffoldKey.currentState?.openDrawer(),
                           ),
                         ),
                       ),
