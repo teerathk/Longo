@@ -229,7 +229,61 @@ class HomeCommentsPage extends State<HomeComments> {
     final globalKey = GlobalKey<ScaffoldState>();
     return Scaffold(
         key: _scaffoldKey,
-        drawer: new MyDrawer(),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              // DrawerHeader(
+              //     child: Text("I am Habib",
+              //         style: TextStyle(color: Colors.white),),
+              //         decoration: BoxDecoration(color: Colors.indigo),
+              // ),
+              UserAccountsDrawerHeader(
+                accountName: Text(name), accountEmail: Text(email),
+                currentAccountPicture: CircleAvatar(
+                  radius: 110,
+
+                  backgroundImage: AssetImage('assets/images/logo.png'),
+                  //backgroundImage: NetworkImage("https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"),
+                ),
+              ),
+
+              ListTile(
+                leading: Icon(Icons.add_box_sharp),
+                title: Text("Homesite"),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomeSite()));
+                  _scaffoldKey.currentState?.openEndDrawer();
+                },
+                //subtitle: Text("In Progress Homesite"),
+                //trailing: Icon(Icons.edit),
+              ),
+              ListTile(
+                leading: Icon(Icons.add_box_sharp),
+                title: Text("Skirting"),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SkirtingSite()));
+                  _scaffoldKey.currentState?.openEndDrawer();
+                },
+                //subtitle: Text("In Progress Homesite"),
+                //trailing: Icon(Icons.edit),
+              ),
+              ListTile(
+                leading: Icon(Icons.logout),
+                title: Text("Logout"),
+                //subtitle: Text("habib@plego.com"),
+                onTap: () {
+                  Logout();
+                },
+              ),
+            ],
+          ),
+        ),
         backgroundColor: const Color(0xfffafafa),
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -280,9 +334,7 @@ class HomeCommentsPage extends State<HomeComments> {
                             iconSize: 50,
                             color: Color(0xff0D529A),
                             onPressed: () =>
-                                {
-                                  //_scaffoldKey.currentState?.openDrawer();
-                                }
+                                _scaffoldKey.currentState?.openDrawer(),
                           ),
                         ),
                       ),
