@@ -67,6 +67,7 @@ class DashboardPage extends State<Dashboard> {
     double screenHeight = MediaQuery.of(context).size.height;
     // final globalKey = GlobalKey<ScaffoldState>();
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: _title,
       home: Scaffold(
         key: _scaffoldKey,

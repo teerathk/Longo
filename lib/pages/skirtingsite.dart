@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Drawer.dart';
+
 class SkirtingSite extends StatefulWidget {
   const SkirtingSite({Key? key}) : super(key: key);
 
@@ -14,6 +16,7 @@ class SkirtingSite extends StatefulWidget {
 }
 class SkirtingSitePage extends State<SkirtingSite> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final TextEditingController sirtingtitle = new TextEditingController();
   var FullName = "";
   @override
@@ -86,6 +89,8 @@ class SkirtingSitePage extends State<SkirtingSite> {
 
     return Material(
       child: Scaffold(
+        key: _scaffoldKey,
+        drawer: new MyDrawer(),
         backgroundColor: const Color(0xffffffff),
         resizeToAvoidBottomInset : false,
         appBar: AppBar(
@@ -128,9 +133,8 @@ class SkirtingSitePage extends State<SkirtingSite> {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {
-
-                            },
+                            onPressed: () =>
+                                _scaffoldKey.currentState?.openDrawer(),
                           ),
                         ),
                       ),

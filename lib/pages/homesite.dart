@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Drawer.dart';
+
 class HomeSite extends StatefulWidget {
   const HomeSite({Key? key}) : super(key: key);
 
@@ -14,6 +16,7 @@ class HomeSite extends StatefulWidget {
 
 class HomeSitePage extends State<HomeSite> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final TextEditingController homesitetitle = new TextEditingController();
   var FullName = "";
@@ -99,6 +102,8 @@ class HomeSitePage extends State<HomeSite> {
 
     return Material(
       child: Scaffold(
+        key: _scaffoldKey,
+        drawer: new MyDrawer(),
         backgroundColor: const Color(0xffffffff),
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -142,7 +147,8 @@ class HomeSitePage extends State<HomeSite> {
                             padding: EdgeInsets.only(left: 0),
                             iconSize: 50,
                             color: Color(0xff0D529A),
-                            onPressed: () {},
+                            onPressed: () =>
+                                _scaffoldKey.currentState?.openDrawer(),
                           ),
                         ),
                       ),
