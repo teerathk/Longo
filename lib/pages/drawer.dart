@@ -3,7 +3,6 @@ import 'package:longo/pages/homesite.dart';
 import 'package:longo/pages/skirtingsite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class MyDrawer extends StatefulWidget {
 
   @override
@@ -37,6 +36,7 @@ class MyDrawerPage extends State<MyDrawer> {
     }
 
   }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -86,9 +86,9 @@ class MyDrawerPage extends State<MyDrawer> {
             title: Text("Sign out"),
             //subtitle: Text("habib@plego.com"),
             trailing: Icon(Icons.logout),
-            onTap: () {
-              Navigator.pop(context);
-            },
+    onTap: () {
+             Navigator.pop(context);
+             },
           ),
         ],
       ),

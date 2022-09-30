@@ -33,10 +33,39 @@ class DashboardPage extends State<Dashboard> {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      // _isLoading = true;
+    });
 
+    initSession(); //call it over here
+  }
   var _title = "Hi";
 
+  String name="";
+  String email="";
+  initSession() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool("Login") == true) {
+      // FullName = prefs.getString("Name").toString();
+
+      setState(() {
+        // _isLoading = false;
+        name = prefs.getString("Name").toString();
+        email = prefs.getString("Email").toString();
+      });
+    }
+
+  }
+
   Future<bool> _onWillPop() async {
+    // if (Navigator.of(context).userGestureInProgress)
+    //   return false;
+    // else
+    //   return true;
+
     return (await showDialog(
           context: context,
           builder: (context) => new AlertDialog(
@@ -49,8 +78,8 @@ class DashboardPage extends State<Dashboard> {
               ),
               TextButton(
                 onPressed: () => {
-                  // Navigator.of(context).pop(true)
-                  Logout()
+                  Navigator.of(context).pop(true)
+                  // Logout()
                 },
                 child: new Text('Yes'),
               ),
@@ -66,44 +95,67 @@ class DashboardPage extends State<Dashboard> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     // final globalKey = GlobalKey<ScaffoldState>();
-    return new WillPopScope(
-        onWillPop: _onWillPop,
-        child: MaterialApp(
+    return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: _title,
           home: Scaffold(
             key: _scaffoldKey,
-            drawer: new MyDrawer(),
-            // Drawer(
-            //   child: ListView(
-            //     padding: EdgeInsets.zero,
-            //     children: [
-            //       const DrawerHeader(
-            //         decoration: BoxDecoration(
-            //           color: Colors.black12,
-            //         ),
-            //         child: Text('Drawer Header'),
-            //       ),
-            //       ListTile(
-            //         title: const Text('Item 1'),
-            //         onTap: () {
-            //
-            //           _scaffoldKey.currentState?.openEndDrawer();
-            //         },
-            //       ),
-            //       ListTile(
-            //         title: const Text('Item 2'),
-            //         onTap: () {
-            //           // Update the state of the app
-            //           // ...
-            //           // Then close the drawer
-            //           // Navigator.pop(context);
-            //         },
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // appBar: AppBar(title: Text(_title)),
+            drawer: Drawer(
+              child: ListView(
+                children: [
+                  // DrawerHeader(
+                  //     child: Text("I am Habib",
+                  //         style: TextStyle(color: Colors.white),),
+                  //         decoration: BoxDecoration(color: Colors.indigo),
+                  // ),
+                  UserAccountsDrawerHeader(
+                    accountName: Text(name), accountEmail: Text(email),
+                    currentAccountPicture: CircleAvatar(
+                      radius: 110,
+
+                      backgroundImage: AssetImage('assets/images/logo.png'),
+                      //backgroundImage: NetworkImage("https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"),
+                    ),
+                  ),
+
+                  ListTile(
+                    leading: Icon(Icons.add_box_sharp),
+                    title: Text("Homesite"),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeSite()));
+                      _scaffoldKey.currentState?.openEndDrawer();
+                    },
+                    //subtitle: Text("In Progress Homesite"),
+                    //trailing: Icon(Icons.edit),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.add_box_sharp),
+                    title: Text("Skirting"),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SkirtingSite()));
+                      _scaffoldKey.currentState?.openEndDrawer();
+                    },
+                    //subtitle: Text("In Progress Homesite"),
+                    //trailing: Icon(Icons.edit),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text("Logout"),
+                    //subtitle: Text("habib@plego.com"),
+                    onTap: () {
+                      Logout();
+                    },
+                  ),
+                ],
+              ),
+            ),
+
             backgroundColor: const Color(0xffffffff),
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
@@ -334,6 +386,6 @@ class DashboardPage extends State<Dashboard> {
               ),
             ),
           ),
-        ));
+        );
   }
 }

@@ -28,12 +28,13 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     setState(() {
-      _isLoading = true;
+      // _isLoading = true;
       _passwordVisible = false;
 
     });
 
     checkLogin();
+
     // var loginstatus = _prefs.then((SharedPreferences prefs) {
     //   return prefs.getBool('Login') ?? false;
     // });
@@ -149,8 +150,11 @@ class _LoginPageState extends State<LoginPage> {
               backgroundColor: Colors.green,
               textColor: Colors.white,
               fontSize: 16.0);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Dashboard()));
+
+          Navigator.pushNamedAndRemoveUntil(context, "/dashboard", (route) => false);
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => Dashboard()));
+
         } else {
           Fluttertoast.showToast(
               msg: "Sorry, try again\n$message",

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:longo/pages/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:http/http.dart' as http;
 // import 'dart:developer' as developer;
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
       routes: {
         "/" : (context) => LoginPage(),
         "/login" : (context) => LoginPage(),
-        "/home" :(context) => HomePageD()
+        "/home" :(context) => HomePageD(),
+        "/dashboard" :(context) => Dashboard(),
       },
     );
   }
