@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:longo/pages/homesite.dart';
 import 'package:longo/pages/homeuploadimage.dart';
 import 'package:longo/pages/drawer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:longo/pages/login.dart';
+import 'package:longo/pages/skirtingsite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeComments extends StatefulWidget {
@@ -15,16 +18,47 @@ class HomeComments extends StatefulWidget {
 class HomeCommentsPage extends State<HomeComments> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final TextEditingController CommentsController = new TextEditingController();
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _isLoading = false;
 
+  Logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    Fluttertoast.showToast(
+        msg: "Logout Successfully",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
+  }
   @override
   void initState() {
     super.initState();
     setState(() {
       _isLoading = true;
     });
+    initSession();
+
     getDBPosts(); //call it over here
+  }
+  String name="";
+  String email="";
+  initSession() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool("Login") == true) {
+      // FullName = prefs.getString("Name").toString();
+
+      setState(() {
+        // _isLoading = false;
+        name = prefs.getString("Name").toString();
+        email = prefs.getString("Email").toString();
+      });
+    }
+
   }
 
   var ArrayList = null;
@@ -188,14 +222,14 @@ class HomeCommentsPage extends State<HomeComments> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+    // final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     String userPhoto = "";
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final globalKey = GlobalKey<ScaffoldState>();
     return Scaffold(
         key: _scaffoldKey,
-        drawer: MyDrawer(),
+        drawer: new MyDrawer(),
         backgroundColor: const Color(0xfffafafa),
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -246,7 +280,9 @@ class HomeCommentsPage extends State<HomeComments> {
                             iconSize: 50,
                             color: Color(0xff0D529A),
                             onPressed: () =>
-                                _scaffoldKey.currentState?.openDrawer(),
+                                {
+                                  //_scaffoldKey.currentState?.openDrawer();
+                                }
                           ),
                         ),
                       ),
@@ -258,11 +294,13 @@ class HomeCommentsPage extends State<HomeComments> {
           ],
         ),
         body: Padding(
+
             padding: const EdgeInsets.all(12),
             child: SingleChildScrollView(
+              reverse: true,
               scrollDirection: Axis.vertical,
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
                         height: 20,
@@ -303,11 +341,15 @@ class HomeCommentsPage extends State<HomeComments> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(0.0),
+
+
+
+
                         child: TextFormField(
                           controller: CommentsController,
                           minLines: 2,
                           maxLines: 5,
-                          keyboardType: TextInputType.multiline,
+                          // keyboardType: TextInputType.multiline,
                           decoration: InputDecoration(
                               hintText: "Add a Comment!",
                               hintStyle: TextStyle(
