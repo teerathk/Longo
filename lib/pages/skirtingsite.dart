@@ -7,6 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SkirtingSite extends StatefulWidget {
+  const SkirtingSite({Key? key}) : super(key: key);
+
   @override
   SkirtingSitePage createState() => SkirtingSitePage();
 }
@@ -32,12 +34,12 @@ class SkirtingSitePage extends State<SkirtingSite> {
         // _isLoading = false;
         FullName = "Hi " +
             (prefs.getString("Name").toString()) +
-            " \nEnter Homesite Address below";
+            " \nEnter Skirting Address below";
       });
     } else {
       setState(() {
         // _isLoading = false;
-        FullName = "Hi,\nEnter Homesite Address below";
+        FullName = "Hi,\nEnter Skirting Address below";
       });
     }
   }

@@ -18,7 +18,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final prefs = SharedPreferences.getInstance();
+  // final prefs = SharedPreferences.getInstance();
 
   bool _isLoading = false;
   final TextEditingController emailController = new TextEditingController();
@@ -66,6 +66,17 @@ class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
   bool validemail = false;
 
+  bool emailClicked = false;
+  Future<bool> validatePass(String text) async {
+    setState(() {
+      if(!text.isEmpty){
+        emailClicked = true;
+      } else {
+        emailClicked = false;
+      }
+    });
+    return true;
+  }
   Future<bool> validateEmail(String text) async {
 
     setState(() {
@@ -102,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   signIn(String email, pass) async {
-    final SharedPreferences prefs = await _prefs;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _isLoading = true;
     });
@@ -247,8 +258,7 @@ class _LoginPageState extends State<LoginPage> {
                   labelText: "",
                   suffixIcon: Padding(
                     padding: EdgeInsetsDirectional.only(end: 12.0),
-                    child: Icon(Icons.check, color: validemail==true ? Colors.green : Colors.black12),
-
+                    child: Icon(Icons.check_circle, color: validemail==true ? Theme.of(context).primaryColorDark : Colors.black12),
 
                   ),
                 ),
@@ -293,7 +303,8 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 controller: passwordController,
                 //autofocus: true,
-                obscureText: _passwordVisible,
+                obscureText: !_passwordVisible,
+                onChanged: (text){ validatePass(text); },
                 style: TextStyle(
                   color: Color(0xff0D529A),
                 ),
@@ -316,12 +327,14 @@ class _LoginPageState extends State<LoginPage> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   labelText: "",
                     suffixIcon: IconButton(
+                      padding: EdgeInsetsDirectional.only(end: 12.0),
                       icon: Icon(
                         // Based on passwordVisible state choose the icon
+
                         _passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Theme.of(context).primaryColorDark,
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: emailClicked ==true ? Theme.of(context).primaryColorDark : Colors.black12,
                       ),
                       onPressed: () {
                         // Update the state i.e. toogle the state of passwordVisible variable

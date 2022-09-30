@@ -322,7 +322,18 @@ class HomeCommentsPage extends State<HomeComments> {
                           minimumSize: const Size.fromHeight(50), // NEW
                         ),
                         onPressed: () {
-                          submitComment(CommentsController.text);
+                          if(CommentsController.text.isEmpty){
+                            Fluttertoast.showToast(
+                                msg: "Enter Comment",
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.TOP,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          } else {
+                            submitComment(CommentsController.text);
+                          }
                           // Navigator .push(
                           //     context, MaterialPageRoute(
                           //     builder: (context) => homechecklistPage()

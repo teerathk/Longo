@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:longo/pages/homechecklist.dart';
-import 'package:longo/pages/Drawer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:longo/pages/homechecklist.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/foundation.dart';
 
 class HomeSite extends StatefulWidget {
+  const HomeSite({Key? key}) : super(key: key);
+
   @override
   HomeSitePage createState() => HomeSitePage();
 }
 
 class HomeSitePage extends State<HomeSite> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   final TextEditingController homesitetitle = new TextEditingController();
   var FullName = "";
   @override
@@ -27,6 +28,17 @@ class HomeSitePage extends State<HomeSite> {
   }
   checkLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("Debug: "+prefs.getBool("Login").toString());
+    print("Debug: "+prefs.getString("Name").toString());
+    // Fluttertoast.showToast(
+    //     msg: "Lets See $prefs",
+    //     toastLength: Toast.LENGTH_LONG,
+    //     gravity: ToastGravity.TOP,
+    //     timeInSecForIosWeb: 1,
+    //     backgroundColor: Colors.green,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0);
+
     if (prefs.getBool("Login") == true) {
       // FullName = prefs.getString("Name").toString();
 

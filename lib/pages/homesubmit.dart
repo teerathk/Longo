@@ -110,7 +110,7 @@ class HomeSubmitPage extends State<HomeSubmit> {
   getFormatedDate(_date) {
     var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
     var inputDate = inputFormat.parse(_date);
-    var outputFormat = DateFormat('yyyy-MM-dd');
+    var outputFormat = DateFormat('MM/dd/yyyy');
     return outputFormat.format(inputDate);
   }
   String dateformated="";
@@ -305,8 +305,21 @@ class HomeSubmitPage extends State<HomeSubmit> {
                   ),
                   onPressed: () {
                     if (IsCompleted) {
-                      submit(CrewLeaderController.text,
-                          DateSubmissionController.text);
+                      if(CrewLeaderController.text.isEmpty || DateSubmissionController.text.isEmpty){
+                        Fluttertoast.showToast(
+                            msg:
+                            "Please enter CrewLeader & Pick the submission date",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.TOP,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+
+                      } else {
+                        submit(CrewLeaderController.text,
+                            DateSubmissionController.text);
+                      }
                     } else {
                       Fluttertoast.showToast(
                           msg:
@@ -316,7 +329,7 @@ class HomeSubmitPage extends State<HomeSubmit> {
                           timeInSecForIosWeb: 1,
                           backgroundColor: Colors.red,
                           textColor: Colors.white,
-                          fontSize: 22.0);
+                          fontSize: 18.0);
                     }
                   },
                   child: const Text(
