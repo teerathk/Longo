@@ -71,7 +71,7 @@ class MyDrawerPage extends State<MyDrawer> {
             //trailing: Icon(Icons.edit),
           ),
           ListTile(
-            leading: Icon(Icons.home),
+            leading: Icon(Icons.add_box_sharp),
             title: Text("Homesite"),
             onTap: () {
               Navigator.push(
@@ -83,7 +83,7 @@ class MyDrawerPage extends State<MyDrawer> {
             //trailing: Icon(Icons.edit),
           ),
           ListTile(
-            leading: Icon(Icons.place),
+            leading: Icon(Icons.add_box_sharp),
             title: Text("Skirting"),
             onTap: () {
               Navigator.push(
@@ -96,7 +96,7 @@ class MyDrawerPage extends State<MyDrawer> {
           ),
           ListTile(
             leading: Icon(Icons.email,color: Colors.white,),
-            title: Text("Sign out"),
+            title: Text("Logout"),
             //subtitle: Text("habib@plego.com"),
             trailing: Icon(Icons.logout),
     onTap: () {
