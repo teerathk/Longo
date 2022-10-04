@@ -73,11 +73,19 @@ class HomeCommentsPage extends State<HomeComments> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var homesiteid = "0";
     if (prefs.containsKey("homesiteid") &&
-        prefs.containsKey("homesiteid") != "0") {
+        prefs.getString("homesiteid").toString() != "0") {
       homesiteid = prefs.getString("homesiteid").toString();
     } else if (prefs.containsKey("skirtingid")) {
       homesiteid = prefs.getString("skirtingid").toString();
     }
+    // Fluttertoast.showToast(
+    //     msg: "id: $homesiteid",
+    //     toastLength: Toast.LENGTH_LONG,
+    //     gravity: ToastGravity.CENTER,
+    //     timeInSecForIosWeb: 1,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0);
 
     final queryParameters = {
       'action': 'setposts',
@@ -127,9 +135,23 @@ class HomeCommentsPage extends State<HomeComments> {
   getDBPosts() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String homesiteid = "0";
-    if (prefs.containsKey("homesiteid")) {
+    // if (prefs.containsKey("homesiteid")) {
+    //   homesiteid = prefs.getString("homesiteid").toString();
+    // }
+    if (prefs.containsKey("homesiteid") &&
+        prefs.getString("homesiteid").toString() != "0") {
       homesiteid = prefs.getString("homesiteid").toString();
+    } else if (prefs.containsKey("skirtingid")) {
+      homesiteid = prefs.getString("skirtingid").toString();
     }
+      // Fluttertoast.showToast(
+      //     msg: "id: $homesiteid",
+      //     toastLength: Toast.LENGTH_LONG,
+      //     gravity: ToastGravity.CENTER,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Colors.red,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
 
     var jsonResponse = null;
     final queryParameters = {'action': 'getposts', 'category_id': homesiteid};
