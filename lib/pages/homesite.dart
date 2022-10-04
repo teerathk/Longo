@@ -84,12 +84,12 @@ class HomeSitePage extends State<HomeSite> {
         // _isLoading = false;
         FullName = "Hi " +
             (prefs.getString("Name").toString()) +
-            " \nEnter Homesite Address below";
+            " \nPlease Enter Address below";
       });
     } else {
       setState(() {
         // _isLoading = false;
-        FullName = "Hi,\nEnter Homesite Address below";
+        FullName = "Hi,\nPease Enter Address below";
       });
     }
   }

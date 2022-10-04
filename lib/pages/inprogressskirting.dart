@@ -162,7 +162,7 @@ class InprogressSkirtingPage extends State<InprogressSkirting> {
     return TableRow(children: [
       Container(
         width: screenWidth,
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 00),
+        margin: EdgeInsets.fromLTRB(0, 10, 0, 00),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: ElevatedButton(
@@ -206,7 +206,7 @@ class InprogressSkirtingPage extends State<InprogressSkirting> {
     return TableRow(children: [
       Container(
         width: screenWidth,
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 00),
+        margin: EdgeInsets.fromLTRB(0, 10, 0, 00),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: ElevatedButton(
@@ -326,7 +326,7 @@ class InprogressSkirtingPage extends State<InprogressSkirting> {
               children: [
                 TableRow(children: [
                   const Text(
-                    "In Pogressss Skirting",
+                    "In Progress Skirting",
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xff0D529A),
@@ -337,7 +337,7 @@ class InprogressSkirtingPage extends State<InprogressSkirting> {
                 TableRow(children: [
                   Container(
                     width: screenWidth,
-                    margin: EdgeInsets.fromLTRB(10, 10, 10, 00),
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 00),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: ElevatedButton(

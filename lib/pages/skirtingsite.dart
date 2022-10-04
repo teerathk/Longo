@@ -72,12 +72,12 @@ class SkirtingSitePage extends State<SkirtingSite> {
         // _isLoading = false;
         FullName = "Hi " +
             (prefs.getString("Name").toString()) +
-            " \nEnter Skirting Address below";
+            " \nPlease Enter Address below";
       });
     } else {
       setState(() {
         // _isLoading = false;
-        FullName = "Hi,\nEnter Skirting Address below";
+        FullName = "Hi,\nPlease Enter Address below";
       });
     }
   }
