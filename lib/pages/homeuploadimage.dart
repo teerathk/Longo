@@ -37,10 +37,11 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
   getCategoryImage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var homesiteid;
-    if (prefs.containsKey("homesiteid") && prefs.containsKey("homesiteid")!="0") {
-      homesiteid = prefs.getString("homesiteid");
+    if (prefs.containsKey("homesiteid") &&
+        prefs.getString("homesiteid").toString() != "0") {
+      homesiteid = prefs.getString("homesiteid").toString();
     } else if (prefs.containsKey("skirtingid")) {
-      homesiteid = prefs.getString("skirtingid");
+      homesiteid = prefs.getString("skirtingid").toString();
     }
     var jsonResponse = null;
     final queryParameters = {
@@ -131,11 +132,13 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
 
 
     var homesiteid;
-    if (prefs.containsKey("homesiteid")) {
-      homesiteid = prefs.getString("homesiteid");
+    if (prefs.containsKey("homesiteid") &&
+        prefs.getString("homesiteid").toString() != "0") {
+      homesiteid = prefs.getString("homesiteid").toString();
     } else if (prefs.containsKey("skirtingid")) {
-      homesiteid = prefs.getString("skirtingid");
+      homesiteid = prefs.getString("skirtingid").toString();
     }
+
     var postUri = Uri.parse("https://www.longocorporation.com/jobs/api.php");
     var request = new http.MultipartRequest("POST", postUri);
     request.fields['action'] = 'uploadimage';
