@@ -141,8 +141,25 @@ class HomeCommentsPage extends State<HomeComments> {
     if (prefs.containsKey("homesiteid") &&
         prefs.getString("homesiteid").toString() != "0") {
       homesiteid = prefs.getString("homesiteid").toString();
+      // Fluttertoast.showToast(
+      //     msg: "1id: $homesiteid",
+      //     toastLength: Toast.LENGTH_LONG,
+      //     gravity: ToastGravity.CENTER,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Colors.red,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
+
     } else if (prefs.containsKey("skirtingid")) {
       homesiteid = prefs.getString("skirtingid").toString();
+      // Fluttertoast.showToast(
+      //     msg: "2id: $homesiteid",
+      //     toastLength: Toast.LENGTH_LONG,
+      //     gravity: ToastGravity.CENTER,
+      //     timeInSecForIosWeb: 1,
+      //     backgroundColor: Colors.red,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
     }
       // Fluttertoast.showToast(
       //     msg: "id: $homesiteid",

@@ -68,6 +68,7 @@ class InprogressSkirtingPage extends State<InprogressSkirting> {
   var tablerowcustom = <TableRow>[];
   List<Model> myAllData = [];
   getInprogressHomesite() async {
+
     var jsonResponse = null;
     final queryParameters = {'action': 'getinprogress', 'cat_type': 'skirting'};
     //

@@ -324,7 +324,7 @@ class InprogressHomeSitePage extends State<InprogressHomeSite> {
               children: [
                 TableRow(children: [
                   const Text(
-                    "In Pogressss Homesite",
+                    "In Pogress Homesite",
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xff0D529A),

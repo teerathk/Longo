@@ -33,8 +33,10 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
     getCategoryImage(); //call it over here
   }
 
-  bool _isLoading=false;
+  bool _isLoading = false;
+
   getCategoryImage() async {
+    ImageWidgets = <Widget>[];
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var homesiteid;
     if (prefs.containsKey("homesiteid") &&
@@ -44,12 +46,9 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
       homesiteid = prefs.getString("skirtingid").toString();
     }
     var jsonResponse = null;
-    final queryParameters = {
-      'action': 'getimages',
-      'cat_id': homesiteid
-    };
+    final queryParameters = {'action': 'getimages', 'cat_id': homesiteid};
     var url =
-    Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+        Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
     // var url = Uri.https('127.0.0.1', '/jobs/api.php', queryParameters);
     // var url = Uri.http('longonew.plego.pro', '/api.php', queryParameters);
     var response = await http.get(url);
@@ -68,7 +67,6 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
           print('message: $message');
           // var jsonBody = json.decode(message);
           for (var data in message) {
-
             ImageWidgets.add(addImageString(data));
           }
           // debugPrint('list: $myAllData');
@@ -111,7 +109,6 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
           textColor: Colors.white,
           fontSize: 16.0);
     }
-
   }
 
   Future getImage() async {
@@ -119,17 +116,86 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
     if (image == null) return;
     final imageTemp = File(image.path);
     setState(() {
-
       selectedImage = imageTemp;
-      ImageWidgets.add(addImageFile(selectedImage!));
+      // ImageWidgets.add(addImageFile(selectedImage!));
       uploadImages(selectedImage!);
     });
     //return image;
   }
 
+  deleteImage(name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isLoading = true;
+    });
+
+    var homesiteid;
+    if (prefs.containsKey("homesiteid") &&
+        prefs.getString("homesiteid").toString() != "0") {
+      homesiteid = prefs.getString("homesiteid").toString();
+    } else if (prefs.containsKey("skirtingid")) {
+      homesiteid = prefs.getString("skirtingid").toString();
+    }
+    var jsonResponse = null;
+    final queryParameters = {'action': 'deleteimage','name':name, 'cat_id': homesiteid};
+    var url =
+    Uri.https('www.longocorporation.com', '/jobs/api.php', queryParameters);
+    var response = await http.get(url);
+
+    var jsonStr = response.body.toString();
+
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        var message = jsonResponse['message'];
+
+        if (jsonResponse['success'] == true) {
+          var message = jsonResponse['message'];
+          Fluttertoast.showToast(
+              msg: "Deleted Successfully",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0);
+
+        }
+      } else {
+        Fluttertoast.showToast(
+            msg: "Something went wrong",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      Fluttertoast.showToast(
+          msg: "Something went wrong",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+    getCategoryImage();
+  }
   uploadImages(File path) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    setState(() {
+      _isLoading = true;
+    });
 
     var homesiteid;
     if (prefs.containsKey("homesiteid") &&
@@ -143,13 +209,9 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
     var request = new http.MultipartRequest("POST", postUri);
     request.fields['action'] = 'uploadimage';
     request.fields['cat_id'] = homesiteid;
-    request.files.add(
-        http.MultipartFile.fromBytes(
-            'image',
-            File(path.path).readAsBytesSync(),
-            filename: path.path.split("/").last
-        )
-    );
+    request.files.add(http.MultipartFile.fromBytes(
+        'image', File(path.path).readAsBytesSync(),
+        filename: path.path.split("/").last));
     //https://longocorporation.com/images/uploads/1664310058image_picker7304483645174969105.jpg
     // request.files.add(new http.MultipartFile.fromBytes(
     //     'image', await File(path).readAsBytes(),
@@ -161,6 +223,9 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
         // final respStr = response.stream.bytesToString();
         // jsonResponse = json.decode(respStr.toString());
         print("Uploaded!");
+        setState(() {
+          _isLoading = false;
+        });
         // print("Uploaded!: "+jsonResponse.toString());
         Fluttertoast.showToast(
             msg: "Uploaded Successfully",
@@ -170,7 +235,11 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
             backgroundColor: Colors.green,
             textColor: Colors.white,
             fontSize: 16.0);
-
+        getCategoryImage();
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
     });
   }
@@ -187,53 +256,106 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
       _image = image;*/
     }
   }
+
   Stack addImageString(String image) {
     return Stack(
+
       children: [
+
+
+
+
+
+        // Align(
+        //   alignment: Alignment.topRight,
+        //
+        //
+        //   child: Icon(
+        //     Icons.close,
+        //     color: Color(0xffFF0000),
+        //
+        //   ),
+        // ),
+
+
         SizedBox(
           height: 30,
         ),
-        Padding( padding:
-        const EdgeInsets.only(right: 5),
+        Padding(
+          padding: const EdgeInsets.only(right: 5),
           child: Image.network(
-            "https://longocorporation.com/images/uploads/"+image!,
+            "https://longocorporation.com/images/uploads/" + image!,
             width: 70,
             height: 70,
             fit: BoxFit.fill,
+
           ),
-    ),
+
+        ),
+        Positioned(
+          top:-8,
+          right: -3,
+          child: Padding(
+            padding: const EdgeInsets.all(0),
+            child: new IconButton(
+                icon: Icon(Icons.delete_forever_rounded,color: Colors.red,),
+                onPressed: () { deleteImage(image); }),
+          ),
+        ),
+
 
         SizedBox(
           height: 20,
         ),
+        // Positioned(
+        //   top: 3, right: 4, //give the values according to your requirement
+        //   child: Icon(Icons.highlight_remove, color: Colors.red),
+        // ),
+
       ],
     );
   }
+
   Stack addImageFile(File image) {
     return Stack(
       children: [
         SizedBox(
           height: 30,
         ),
-    Padding( padding:
-    const EdgeInsets.only(right: 5),
-        child: image != null
-            ? Image.file(
-                image!,
-                width: 70,
-                height: 70,
-                fit: BoxFit.fill,
-              )
-            : Image.network(
-                "https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png"),
-    ),
+        Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: image != null
+              ? Image.file(
+                  image!,
+                  width: 70,
+                  height: 70,
+                  fit: BoxFit.fill,
+                )
+              : Image.network(
+                  "https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png"),
+        ),
+        Positioned(
+          top:-8,
+          right: -3,
+          child: Padding(
+            padding: const EdgeInsets.all(0),
+            child: new IconButton(
+                icon: Icon(Icons.delete_forever_rounded,color: Colors.red,),
+                onPressed: () { deleteImage(image); }),
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+    final GlobalKey<ScaffoldState> _scaffoldKey =
+        new GlobalKey<ScaffoldState>();
     String userPhoto = "";
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -268,7 +390,7 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                 fit: BoxFit.fill,
-                                image: AssetImage ('assets/images/logo.png'),
+                                image: AssetImage('assets/images/logo.png'),
                               )),
                         ),
                       ),
@@ -319,13 +441,15 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
 
                   Container(
                     width: screenWidth,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: ImageWidgets),
-                      ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: _isLoading
+                              ? <Widget>[Center(child: CircularProgressIndicator())]
+                              : ImageWidgets),
 
+                    ),
                   ),
                   SizedBox(
                     height: 10,
@@ -420,10 +544,10 @@ class HomeUploadImagePage extends State<HomeUploadImage> {
                       minimumSize: const Size.fromHeight(50), // NEW
                     ),
                     onPressed: () {
-                      Navigator .push(
-                          context, MaterialPageRoute(
-                          builder: (context) => HomeSubmit()
-                      ));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeSubmit()));
                     },
                     child: const Text(
                       'Next',
